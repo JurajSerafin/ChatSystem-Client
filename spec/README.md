@@ -1,47 +1,64 @@
 # Specification of the final project for relevant C# courses
-(When modifying this document, please maintain the layout and structure and follow the inline instructions.)
 
 ## C# Courses selection
-(Change `[ ]` to `[x]` for the courses you plan to use this final project for.)
-
 - [x] NPRG035 (Programming in C# language | Programování v jazyce C#)
-- [ ] NPRG038 (Advanced C# Programming | Pokročilé programování v jazyce C#)
-- [ ] NPRG057 (Advanced .NET Programming II | Pokročilé programování pro .NET II)
-- [ ] NPRG064 (Programming user interfaces in .NET | Programování uživatelských rozhraní v .NET)
+- [x] NPRG038 (Advanced C# Programming | Pokročilé programování v jazyce C#)
+- [x] NPRG057 (Advanced .NET Programming II | Pokročilé programování pro .NET II)
+- [x] NPRG064 (Programming user interfaces in .NET | Programování uživatelských rozhraní v .NET)
 
 ## Specification
 
-### Title (replace this heading with an actual title)
+### ChatSystem Chat Application Frontend
+
+Frontend for a chatting application with end-to-end encryption (E2EE)
+
+
+#### Motivation
 ---
-(Remove this section.)
+The goal is to develop a desktop chatting application used for general-purpose secure communication. The intention is to make the application simple to understand and use, while also versatile in terms of usage (types of users, messages, etc.) and code (abstraction, maintainability, extensibility, etc.).
 
-Give your project a meaningful title, i.e., several words that briefly describe what the project is about.
 
-These are considered good titles:
- - Task Scheduler with Recurring Events and Notifications
- - Personal Budget Tracker with Categorization and Reports
- - Maze Generator and Solver with Visual Animation
- - 2D Top-Down Shooter Game with Procedural Level Generation
-
-On the other hand, these would not be good titles:
- - Game with Enemies
- - Project for Files
- - Tool for API
+#### Main Features
 ---
-(Replace this section with the actual specification.)
+Besides already mentioned E2EE message encryption, the application will also perform local caching of recent/frequently-used data such as encryption keys or newest messages.
 
-The actual specification follows. Make sure to thoroughly specify what your application will do and how. Most of the ReCodEx assignments are examples of detailed specifications. It is not necessary to explicitly specify every single corner case scenario. Here you can find a few bullets on what to describe:
- - Motivation: Why is the application useful (apart from getting credit for the course)?
- - Use case scenarios: Who will use this app? For what purpose?
- - Main Features: What does the application do? What buttons/options/arguments will be available?
- - UI/UX: How will the application look (CLI, TUI, GUI, Web, Library, ...)? How will the user interact with the application?
- - Persistence: Will there be some data stored somewhere? (SQL, TXT, JSON, ...)? What data will be stored?
- - Libraries/Technologies: What other libraries will be used, if any? (WinForms, WPF, ASP.NET, Unity, ...)
- - Testing: How will the application be tested? How will the functionality be evaluated?
+The application's server is already written in C++ and ready to use. The frontend will communicate with it using a REST API.
 
-Note that the specification is *binding*, i.e., you will be required to implement all features from the specification.
+From a high-level point of view, the application will handle:
+	- creating user accounts
+	- sending direct text messages
+
+That being said, the system should be extensible by supporting new message types, implementing group chats, and defining new user roles and allowed actions within the application.
+
+
+#### UI/UX:
+---
+The application will use a GUI implemented by MVVM pattern. The user's initial interaction will be with a login/registration window. After a successful logging in, the user will enter a dashboard-like window, where they can browse through already existing chats, or search for other users using a dedicated search bar.
+
+
+#### Persistence
+---
+The application will utilize the **SQLite** engine for local cache purposes, using cache-aside pattern. The cache will store encryption keys an recent messages, including their associated chat and sender information.
+
 
 ---
-(Remove this section after integrating it into the specification.)
+#### Networking
+---
+The application will communicate with the server using a REST API.
 
-Note that passing the final project requirements for the advanced courses requires non-trivial usage of some of the C#/.NET features taught in those courses. Make sure to include the expected features used in the specification. For more information about these features, check the website of the relevant courses. If you are unsure whether the usage of a specific advanced feature is reasonable, ask your teacher.
+
+#### Libraries
+---
+| Libraries | Purpose |
+|-----------|----------|
+|**Avalonia**, **ReactiveUI**| GUI |
+| **SQLite**, **Entity Framework** | Local Cache |
+|**Refit**	| Networking (API contracts, REST calls, serialization, etc.) |
+|**System.Security.Cryptography**| AES and RSA cryptographic algorithms |
+| **Konscious.Security.Cryptography.Argon2**| Password-based **MEK** key derivation |
+
+
+#### Testing
+---
+The application will utilize unit testing of all important components and integration testing for individual use cases (logging in, sending a message, etc.)
+using the **xUnit** framework.
