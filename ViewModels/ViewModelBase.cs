@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace c__final.ViewModels;
+namespace ChatSystem.Client.ViewModels;
 
 public abstract class ViewModelBase : ObservableObject
 {

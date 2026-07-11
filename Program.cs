@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace c__final;
+namespace ChatSystem.Client;
 
 sealed class Program
 {

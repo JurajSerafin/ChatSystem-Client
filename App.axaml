@@ -1,7 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="c__final.App"
-             xmlns:local="using:c__final"
+             x:Class="ChatSystem.Client.App"
+             xmlns:local="using:ChatSystem.Client"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 

@@ -2,9 +2,9 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using c__final.ViewModels;
+using ChatSystem.Client.ViewModels;
 
-namespace c__final;
+namespace ChatSystem.Client;
 
 /// <summary>
 /// Given a view model, returns the corresponding view if possible.
