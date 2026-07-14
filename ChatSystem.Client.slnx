@@ -1,3 +1,8 @@
 <Solution>
-  <Project Path="ChatSystem.Client.csproj" />
+  <Folder Name="/src/">
+    <Project Path="src/ChatSystem.Client/ChatSystem.Client.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ChatSystem.Client.Tests/ChatSystem.Client.Tests.csproj" />
+  </Folder>
 </Solution>
