@@ -17,7 +17,7 @@ internal interface IId<TSelf> where TSelf : struct, IId<TSelf> {
     /// <summary>
     /// Gets or sets the underlying raw <see cref="Guid"/> value.
     /// </summary>
-    Guid Value { get; set; }
+    Guid Value { get; init; }
 
     /// <summary>
     /// Creates a new instance of the strongly-typed identifier with a specified <see cref="Guid"/>.

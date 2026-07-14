@@ -9,6 +9,6 @@ namespace ChatSystem.Client.Core.Domain.User;
 /// This is record struct that cannot be accidentally exchanged with other identifier types (like <see cref="Message.MessageId"/>)
 /// at compile time.
 /// </summary>
-internal record struct UserId(Guid Value) : IId<UserId> {
+internal readonly record struct UserId(Guid Value) : IId<UserId> {
     public static UserId Create(Guid guid) => new(guid);
 }
