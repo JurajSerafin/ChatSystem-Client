@@ -1,6 +1,6 @@
 using System;
 
-namespace ChatSystem.Client.Core.Entities;
+namespace ChatSystem.Client.Core.Chat;
 
 
 /// <summary>

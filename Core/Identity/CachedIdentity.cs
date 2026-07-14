@@ -1,4 +1,4 @@
-namespace ChatSystem.Client.Core.Entities;
+namespace ChatSystem.Client.Core.Identity;
 
 
 /// <summary>

@@ -1,6 +1,6 @@
 using System;
 
-namespace ChatSystem.Client.Core.Entities;
+namespace ChatSystem.Client.Core.Message;
 
 /// <summary>
 /// Represents a fully decrypted message cached in the local database.
