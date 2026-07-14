@@ -1,11 +1,6 @@
-image: mcr.microsoft.com/dotnet/sdk:9.0
-
-stages:
-  - build
-  - test
-
 build:
-  stage: build
+  stage: .pre
+  image: mcr.microsoft.com/dotnet/sdk:9.0
   script:
     - dotnet restore ChatSystem.Client.slnx
     - dotnet build ChatSystem.Client.slnx --no-restore

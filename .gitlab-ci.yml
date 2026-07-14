@@ -9,6 +9,7 @@ workflow:
 
 stages:
   - review
+  - test
 
 # Fetch the most up-to-date definition from tests repository
 include:
