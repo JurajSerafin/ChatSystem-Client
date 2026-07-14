@@ -7,6 +7,11 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
+
+  <ItemGroup>
+	<InternalsVisibleTo Include="ChatSystem.Client.Tests" />
+  </ItemGroup>
+
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
