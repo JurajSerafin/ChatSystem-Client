@@ -1,0 +1,26 @@
+image: mcr.microsoft.com/dotnet/sdk:9.0
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - dotnet restore ChatSystem.Client.slnx
+    - dotnet build ChatSystem.Client.slnx --no-restore
+  artifacts:
+    paths:
+      - src/*/bin/
+      - src/*/obj/
+      - tests/*/bin/
+      - tests/*/obj/
+
+tests-all:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - dotnet test tests/ChatSystem.Client.Tests/ChatSystem.Client.Tests.csproj --no-restore --no-build
+  artifacts:
+    when: always
