@@ -13,4 +13,4 @@ stages:
 # Fetch the most up-to-date definition from tests repository
 include:
   - remote: 'https://gitlab.mff.cuni.cz/teaching/nprg035/merge-request-bot/-/raw/master/ci.yml'
-  - local: '.gitlab/test.yml'
+  - local: '.gitlab/tests.yml'
