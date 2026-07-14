@@ -7,8 +7,6 @@ tests-all:
       - .nuget/packages
   variables:
     NUGET_PACKAGES_DIRECTORY: .nuget/packages
-  dependencies:
-    - build
   script:
     - dotnet test tests/ChatSystem.Client.Tests/ChatSystem.Client.Tests.csproj --no-restore --no-build
   artifacts:
