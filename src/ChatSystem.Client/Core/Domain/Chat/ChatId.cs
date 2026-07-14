@@ -1,7 +1,7 @@
 using System;
-using ChatSystem.Client.Core.Interfaces;
+using ChatSystem.Client.Core.Interfaces.Ids;
 
-namespace ChatSystem.Client.Core.Chat;
+namespace ChatSystem.Client.Core.Domain.Chat;
 
 /// <summary>
 /// Represents a strongly-typed, type-safe identifier for a Chat.

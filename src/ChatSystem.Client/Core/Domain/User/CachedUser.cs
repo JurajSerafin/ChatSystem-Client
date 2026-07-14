@@ -1,6 +1,6 @@
 using System;
 
-namespace ChatSystem.Client.Core.User;
+namespace ChatSystem.Client.Core.Domain.User;
 
 
 /// <summary>

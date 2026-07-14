@@ -1,7 +1,7 @@
 using System;
-using ChatSystem.Client.Core.Interfaces;
+using ChatSystem.Client.Core.Interfaces.Ids;
 
-namespace ChatSystem.Client.Core.User;
+namespace ChatSystem.Client.Core.Domain.User;
 
 /// <summary>
 /// Represents a strongly-typed, type-safe identifier for a User.
