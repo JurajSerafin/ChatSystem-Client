@@ -1,12 +1,6 @@
 tests-all:
   stage: test
   image: mcr.microsoft.com/dotnet/sdk:9.0
-  cache:
-    key: nuget
-    paths:
-      - .nuget/packages
-  variables:
-    NUGET_PACKAGES_DIRECTORY: .nuget/packages
   script:
     - dotnet test tests/ChatSystem.Client.Tests/ChatSystem.Client.Tests.csproj --no-restore --no-build
   artifacts:
