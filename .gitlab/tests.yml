@@ -1,18 +1,12 @@
-build:
-  stage: .pre
-  image: mcr.microsoft.com/dotnet/sdk:9.0
-  script:
-    - dotnet restore ChatSystem.Client.slnx
-    - dotnet build ChatSystem.Client.slnx --no-restore
-  artifacts:
-    paths:
-      - src/*/bin/
-      - src/*/obj/
-      - tests/*/bin/
-      - tests/*/obj/
-
 tests-all:
   stage: test
+  image: mcr.microsoft.com/dotnet/sdk:9.0
+  cache:
+    key: nuget
+    paths:
+      - .nuget/packages
+  variables:
+    NUGET_PACKAGES_DIRECTORY: .nuget/packages
   dependencies:
     - build
   script:
