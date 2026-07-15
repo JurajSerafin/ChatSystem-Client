@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using ChatSystem.Client.Core.Domain.User;
 
-namespace ChatSystem.Client.Core.Interfaces.Networking.User;
+namespace ChatSystem.Client.Core.Interfaces.Networking.User.DTOs;
 
 /// <summary>
 /// Represents the server response payload containing metadata of a single user.
