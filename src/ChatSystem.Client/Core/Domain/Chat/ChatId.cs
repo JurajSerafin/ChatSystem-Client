@@ -1,4 +1,3 @@
-using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Interfaces.Ids;
 using System;
 using System.Text.Json.Serialization;
