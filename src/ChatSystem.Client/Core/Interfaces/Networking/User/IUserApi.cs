@@ -46,5 +46,5 @@ internal interface IUserApi {
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>The user's public key string.</returns>
     [Get("/users/{id}/public-key")]
-    Task<GetPublicKeyResponse> GetPublicKey(UserId id, CancellationToken cancellationToken);
+    Task<GetPublicKeyResponse> GetPublicKeyAsync(UserId id, CancellationToken cancellationToken = default);
 }
