@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.Chat;
-using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Interfaces.Networking.Chat.DTOs;
 using ChatSystem.Client.Core.Interfaces.Networking.User.DTOs;
 using Refit;

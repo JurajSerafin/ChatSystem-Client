@@ -9,5 +9,6 @@ namespace ChatSystem.Client.Core.Interfaces.Networking.Chat.DTOs;
 /// </summary>
 /// <param name="ParticipantIds">The collection of user IDs to include in the newly created chat.</param>
 internal record CreateChatRequest(
-    [property: JsonPropertyName("participant_ids")] IReadOnlyList<UserId> ParticipantIds
+    [property: JsonPropertyName("participant_ids")]
+    IReadOnlyList<UserId> ParticipantIds
 );

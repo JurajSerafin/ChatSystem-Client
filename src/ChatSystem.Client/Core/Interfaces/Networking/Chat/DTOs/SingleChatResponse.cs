@@ -12,9 +12,18 @@ namespace ChatSystem.Client.Core.Interfaces.Networking.Chat.DTOs;
 /// <param name="Name">The assigned name of the chat room (typically null for 1-on-1 chats).</param>
 /// <param name="LastMessageId">The ID of the most recent message in the chat, if any exist.</param>
 internal record SingleChatResponse(
-    [property: JsonPropertyName("id")] string Id,
-    [property: JsonPropertyName("created_at")] DateTimeOffset CreatedAt,
-    [property: JsonPropertyName("last_activity_at")] DateTimeOffset LastActivityAt,
-    [property: JsonPropertyName("name")] string? Name,
-    [property: JsonPropertyName("last_message_id")] string? LastMessageId
+    [property: JsonPropertyName("id")]
+    string Id,
+
+    [property: JsonPropertyName("created_at")]
+    DateTimeOffset CreatedAt,
+
+    [property: JsonPropertyName("last_activity_at")]
+    DateTimeOffset LastActivityAt,
+
+    [property: JsonPropertyName("name")]
+    string? Name,
+
+    [property: JsonPropertyName("last_message_id")]
+    string? LastMessageId
 );
