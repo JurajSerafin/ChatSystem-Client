@@ -6,7 +6,7 @@ using Refit;
 namespace ChatSystem.Client.Core.Interfaces.Networking.Auth;
 
 /// <summary>
-/// Defines the API client contract for authentication operations.
+/// Defines the API client contract for authentication server requests.
 /// This interface is utilized by Refit to generate network request implementations at runtime.
 /// </summary>
 internal interface IAuthApi {

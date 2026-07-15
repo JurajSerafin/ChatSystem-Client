@@ -10,7 +10,7 @@ using Refit;
 namespace ChatSystem.Client.Core.Interfaces.Networking.Chat;
 
 /// <summary>
-/// Defines the API client contract for chat-related operations.
+/// Defines the API client contract for chat-related server requests.
 /// This interface is utilized by Refit to generate network request implementations at runtime.
 /// </summary>
 internal interface IChatApi {
