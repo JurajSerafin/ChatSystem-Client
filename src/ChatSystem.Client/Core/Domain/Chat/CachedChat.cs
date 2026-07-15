@@ -24,6 +24,11 @@ internal class CachedChat {
     public string? Name { get; set; }
 
     /// <summary>
+    /// Timestamp of when this chat was created.
+    /// </summary>
+    public required DateTimeOffset CreatedAt { get; set; }
+
+    /// <summary>
     /// Timestamp of the last activity (message sent/received) in this chat.
     /// </summary>
     public required DateTimeOffset LastActivityAt { get; set; }
