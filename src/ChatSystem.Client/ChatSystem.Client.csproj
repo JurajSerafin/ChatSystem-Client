@@ -34,4 +34,11 @@
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Core\Interfaces\Networking\Common\DTOs\" />
+    <Folder Include="Core\Interfaces\Services\" />
+    <Folder Include="Core\Interfaces\Repositories\" />
+    <Folder Include="Core\ValueObjects\" />
+  </ItemGroup>
 </Project>
