@@ -11,7 +11,7 @@ namespace ChatSystem.Client.Core.Domain.Message;
 /// at compile time.
 /// </summary>
 [JsonConverter(typeof(MessageIdJsonConverter))]
-internal readonly record struct MessageId(Guid Value) : IId<MessageId> {
+public readonly record struct MessageId(Guid Value) : IId<MessageId> {
     public static MessageId Create(Guid guid) => new(guid);
 }
 

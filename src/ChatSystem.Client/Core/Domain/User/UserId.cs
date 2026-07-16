@@ -11,7 +11,7 @@ namespace ChatSystem.Client.Core.Domain.User;
 /// at compile time.
 /// </summary>
 [JsonConverter(typeof(UserIdJsonConverter))]
-internal readonly record struct UserId(Guid Value) : IId<UserId> {
+public readonly record struct UserId(Guid Value) : IId<UserId> {
     public static UserId Create(Guid guid) => new(guid);
 }
 

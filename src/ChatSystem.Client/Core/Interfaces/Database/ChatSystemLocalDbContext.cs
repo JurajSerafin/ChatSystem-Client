@@ -1,9 +1,9 @@
-﻿using System;
-using ChatSystem.Client.Core.Domain.Chat;
+﻿using ChatSystem.Client.Core.Domain.Chat;
 using ChatSystem.Client.Core.Domain.Message;
 using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ChatSystem.Client.Core.Interfaces.Database;
 
@@ -32,7 +32,7 @@ namespace ChatSystem.Client.Core.Interfaces.Database;
 /// </para>
 /// </remarks>
 /// <param name="options">The database context options configuring provider settings, connection strings, and behavior.</param>
-internal sealed class ChatSystemLocalDbContext(
+public sealed class ChatSystemLocalDbContext(
     DbContextOptions<ChatSystemLocalDbContext> options) : DbContext(options) {
 
     /// <summary>
@@ -125,8 +125,36 @@ internal sealed class ChatSystemLocalDbContext(
         modelBuilder.Entity<CachedChat>()
             .Property(c => c.LastMessageId)
             .HasConversion(
-                id => id.HasValue ? id.Value.Value.ToString() : null,
-                strGuid => strGuid == null ? null : MessageId.Create(new Guid(strGuid))
+                id => id.HasValue ? id.Value.Value : null,
+                (Guid? guid) => guid.HasValue ? MessageId.Create(guid.Value) : null
+            );
+
+        modelBuilder.Entity<CachedChat>()
+            .Property(c => c.LastActivityAt)
+            .HasConversion(
+                dto => dto.UtcTicks,
+                ticks => new DateTimeOffset(ticks, TimeSpan.Zero)
+            );
+
+        modelBuilder.Entity<CachedChat>()
+            .Property(c => c.CreatedAt)
+            .HasConversion(
+                dto => dto.UtcTicks,
+                ticks => new DateTimeOffset(ticks, TimeSpan.Zero)
+            );
+
+        modelBuilder.Entity<CachedChat>()
+            .Property(c => c.CachedAt)
+            .HasConversion(
+                dto => dto.UtcTicks,
+                ticks => new DateTimeOffset(ticks, TimeSpan.Zero)
+            );
+
+        modelBuilder.Entity<CachedMessage>()
+            .Property(m => m.CreatedAt)
+            .HasConversion(
+                dto => dto.UtcTicks,
+                ticks => new DateTimeOffset(ticks, TimeSpan.Zero)
             );
 
         modelBuilder.Entity<CachedChatParticipant>()
@@ -174,13 +202,28 @@ internal sealed class ChatSystemLocalDbContext(
         modelBuilder.Entity<CachedChatParticipant>()
             .HasOne(cp => cp.Chat)
             .WithMany(c => c.Participants)
-            .HasForeignKey(cp => cp.ChatId);
+            .HasForeignKey(cp => cp.ChatId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // User -> Many Participant Associations
         modelBuilder.Entity<CachedChatParticipant>()
             .HasOne(cp => cp.User)
             .WithMany()
-            .HasForeignKey(cp => cp.UserId);
+            .HasForeignKey(cp => cp.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Chat -> Many Messages
+        modelBuilder.Entity<CachedMessage>()
+            .HasOne<CachedChat>()
+            .WithMany()
+            .HasForeignKey(m => m.ChatId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CachedChat>()
+            .HasOne<CachedMessage>()
+            .WithMany()
+            .HasForeignKey(c => c.LastMessageId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 
     /// <summary>

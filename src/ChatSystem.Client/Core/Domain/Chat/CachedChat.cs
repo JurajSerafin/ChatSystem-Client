@@ -9,7 +9,7 @@ namespace ChatSystem.Client.Core.Domain.Chat;
 /// <summary>
 /// Represents a chat room's metadata cached in the local database.
 /// </summary>
-internal class CachedChat {
+public class CachedChat {
 
     /// <summary>
     /// The unique identifier of the chat room.

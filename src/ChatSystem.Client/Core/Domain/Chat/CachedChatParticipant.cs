@@ -28,7 +28,7 @@ namespace ChatSystem.Client.Core.Domain.Chat;
 /// </list>
 /// </para>
 /// </remarks>
-internal class CachedChatParticipant {
+public class CachedChatParticipant {
 
     /// <summary>
     /// Gets or sets the ID of the participating user.

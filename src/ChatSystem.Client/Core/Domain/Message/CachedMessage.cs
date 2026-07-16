@@ -8,7 +8,7 @@ namespace ChatSystem.Client.Core.Domain.Message;
 /// <summary>
 /// Represents a fully decrypted message cached in the local database.
 /// </summary>
-internal class CachedMessage {
+public class CachedMessage {
 
     /// <summary>
     /// The unique identifier of the message.

@@ -7,7 +7,7 @@ namespace ChatSystem.Client.Core.Domain.User;
 /// <summary>
 /// Represents a user profile cached in the local database
 /// </summary>
-internal class CachedUser {
+public class CachedUser {
 
     /// <summary>
     /// The unique identifier of the user.
@@ -37,7 +37,7 @@ internal class CachedUser {
     /// The string token representing a user's role, defining a set of authorized actions. See <see cref="IUserRole"/>
     /// </summary>
     [MaxLength(32)]
-    public required string RoleString { get; set; }
+    public required string Role { get; set; }
 
     /// <summary>
     /// Timestamp representing the last time this profile has been synced to the local cache.

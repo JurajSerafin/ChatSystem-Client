@@ -9,7 +9,7 @@ namespace ChatSystem.Client.Core.Identity;
 /// This entity is stored securely and indicates who is currently using the application and
 /// holding the session token required for authenticated network requests.
 /// </summary>
-internal class CachedIdentity {
+public class CachedIdentity {
 
     /// <summary>
     /// The unique identifier of the user.
