@@ -1,4 +1,7 @@
+using ChatSystem.Client.Core.Domain.Chat;
+using ChatSystem.Client.Core.Domain.User;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChatSystem.Client.Core.Domain.Message;
 
@@ -10,26 +13,28 @@ internal class CachedMessage {
     /// <summary>
     /// The unique identifier of the message.
     /// </summary>
-    public required string Id { get; set; }
+    public required MessageId Id { get; set; }
 
     /// <summary>
     /// The unique identifier of the user who sent the message.
     /// </summary>
-    public required string SenderId { get; set; }
+    public required UserId SenderId { get; set; }
 
     /// <summary>
     /// The unique identifier of the chat room this message belongs to.
     /// </summary>
-    public required string ChatId { get; set; }
+    public required ChatId ChatId { get; set; }
 
     /// <summary>
     /// The decrypted, raw text of the message.
     /// </summary>
+    [MaxLength(4096)]
     public required string PlainText { get; set; }
 
     /// <summary>
     /// The type descriptor of the message (e.g., "TEXT", "IMAGE", etc.).
     /// </summary>
+    [MaxLength(32)]
     public required string Type { get; set; }
 
     /// <summary>

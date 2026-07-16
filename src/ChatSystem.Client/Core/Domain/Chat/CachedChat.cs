@@ -1,4 +1,7 @@
+using ChatSystem.Client.Core.Domain.Message;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ChatSystem.Client.Core.Domain.Chat;
 
@@ -11,16 +14,17 @@ internal class CachedChat {
     /// <summary>
     /// The unique identifier of the chat room.
     /// </summary>
-    public required string Id { get; set; }
+    public required ChatId Id { get; set; }
 
     /// <summary>
     /// The ID of the most recent message in the chat, if any exist.
     /// </summary>
-    public string? LastMessageId { get; set; }
+    public MessageId? LastMessageId { get; set; }
 
     /// <summary>
     /// The assigned name of the chat room (typically null for 1-on-1 chats).
     /// </summary>
+    [MaxLength(128)]
     public string? Name { get; set; }
 
     /// <summary>
@@ -42,5 +46,9 @@ internal class CachedChat {
     /// Flag indicating if the chat has been soft-deleted locally.
     /// </summary>
     public required bool IsDeleted { get; set; } = false;
+
+
+    // EF navigation property
+    public List<CachedChatParticipant> Participants { get; set; } = [];
 
 }
