@@ -13,13 +13,15 @@ namespace ChatSystem.Client.Core.Interfaces.Repositories;
 /// the many-to-many junction relationships between users and chats.
 /// </summary>
 internal interface ILocalChatRepository {
-
     /// <summary>
     /// Retrieves all cached chat rooms available to the user.
     /// </summary>
+    /// <param name="limit"></param>
+    /// <param name="offset"></param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task awaiting list of CachedChat objects, typically sorted by recent activity.</returns>
-    public Task<IReadOnlyList<CachedChat>> FindAllAsync(CancellationToken cancellationToken = default);
+    public Task<IReadOnlyList<CachedChat>> FindAllAsync(int limit, int offset,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves a specific chat room by its unique identifier.
@@ -42,10 +44,11 @@ internal interface ILocalChatRepository {
     /// </summary>
     /// <param name="userId">The ID of the user to add.</param>
     /// <param name="chatId">The ID of the chat room.</param>
-    /// <param name="roleString">The string token representing the assigned role of the user in the chat.</param>
+    /// <param name="role">The string token representing the assigned role of the user in the chat.</param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous execution of the participant-adding operation.</returns>
-    public Task AddParticipantAsync(UserId userId, ChatId chatId, string roleString, CancellationToken cancellationToken = default)
+    public Task AddParticipantAsync(UserId userId, ChatId chatId, string role,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes a chat room and cascades deletions to its local messages and participant links.
@@ -61,7 +64,8 @@ internal interface ILocalChatRepository {
     /// <param name="chatId">The ID of the chat room.</param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task awaiting the list of user ID strings.</returns>
-    public IReadOnlyList<ChatId> GetParticipantIdsAsync(ChatId chatId, CancellationToken cancellationToken = default);
+    public Task<IReadOnlyList<UserId>> GetParticipantIdsAsync(ChatId chatId,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Removes a user's participation link from a specific chat room.

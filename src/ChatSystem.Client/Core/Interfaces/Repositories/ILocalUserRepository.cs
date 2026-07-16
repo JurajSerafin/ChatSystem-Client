@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.User;
 
@@ -24,9 +25,13 @@ internal interface ILocalUserRepository {
     /// Retrieves a user profile by either an exact login username or a display tag.
     /// </summary>
     /// <param name="searchVal">The login or tag to search for.</param>
+    /// <param name="limit"></param>
+    /// <param name="offset"></param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task awaiting a <see cref="CachedUser"/> instance containing the user profile if found locally, null otherwise.</returns>
-    public Task<CachedUser?> FindByLoginOrTagAsync(string searchVal, CancellationToken cancellationToken = default);
+    public Task<IReadOnlyList<CachedUser>> FindByLoginOrTagAsync(string searchVal,
+        int limit, int offset,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Inserts a new user profile or updates an existing one in the local cache.

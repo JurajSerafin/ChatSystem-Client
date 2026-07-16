@@ -29,9 +29,12 @@ internal interface ILocalMessageRepository {
     /// </summary>
     /// <param name="chatId"> The ID of the chat room to search within.</param>
     /// <param name="keywords">The search query string.</param>
+    /// <param name="limit"></param>
+    /// <param name="offset"></param>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task awaiting a list of messages matching the search criteria.</returns>
-    public Task<IReadOnlyList<CachedMessage>> SearchAsync(ChatId chatId, string keywords, CancellationToken cancellationToken = default);
+    public Task<IReadOnlyList<CachedMessage>> SearchAsync(ChatId chatId, string keywords, int limit, int offset,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Removes a specific message entirely from the local cache.

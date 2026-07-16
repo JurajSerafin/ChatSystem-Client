@@ -24,7 +24,7 @@ internal interface ILocalIdentityRepository {
     /// </summary>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task awaiting CachedIdentity instance containing the identity if an active session exists, null otherwise.</returns>
-    public Task<CachedIdentity?> Load(CancellationToken cancellationToken = default);
+    public Task<CachedIdentity?> LoadAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Refreshes the active session token without modifying the rest of the user's identity.
@@ -39,5 +39,5 @@ internal interface ILocalIdentityRepository {
     /// </summary>
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// <returns>A task representing the asynchronous execution of the cache-clearing operation.</returns>
-    public Task Clear(CancellationToken cancellationToken = default);
+    public Task ClearAsync(CancellationToken cancellationToken = default);
 }
