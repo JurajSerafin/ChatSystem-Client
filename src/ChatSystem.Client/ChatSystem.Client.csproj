@@ -33,14 +33,22 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0" />
     <PackageReference Include="Refit" Version="13.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Core\Interfaces\Database\" />
+    <Folder Include="Application\Services\" />
     <Folder Include="Core\Interfaces\Networking\Common\DTOs\" />
     <Folder Include="Core\Interfaces\Services\" />
-    <Folder Include="Core\Interfaces\Repositories\" />
     <Folder Include="Core\ValueObjects\" />
+    <Folder Include="Infrastructure\Cryptography\" />
+    <Folder Include="Infrastructure\Database\" />
+    <Folder Include="Infrastructure\Networking\" />
   </ItemGroup>
 </Project>
