@@ -12,7 +12,7 @@ internal interface IAbstractKdfParams {
 /// <summary>
 /// Interface for a service for deriving strong cryptographic keys from user passwords.
 /// </summary>
-internal interface IKeyDerivationService<TKdfParams> where TKdfParams : IAbstractKdfParams {
+internal interface IKeyDerivationService  {
 
     /// <summary>
     /// Generates a cryptographically secure random salt.
@@ -33,14 +33,14 @@ internal interface IKeyDerivationService<TKdfParams> where TKdfParams : IAbstrac
     /// Returns the current recommended default parameters for key derivation.
     /// </summary>
     /// <returns>The default KdfParams instance.</returns>
-    public TKdfParams GetDefaultParams();
+    public KdfParams GetDefaultParams();
 
     /// <summary>
     /// Parses an algorithm identifier string into a structured KdfParams object.
     /// </summary>
     /// <param name="algId">The raw algorithm identification string.</param>
     /// <returns>The parsed KdfParams.</returns>
-    public TKdfParams ParseAlgorithmId(string algId);
+    public KdfParams ParseAlgorithmId(string algId);
 
     /// <summary>
     /// Checks if the provided algorithm identifier uses outdated parameters requiring an upgrade.
