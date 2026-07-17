@@ -1,7 +1,7 @@
-﻿using ChatSystem.Client.Core.Interfaces.Database;
+﻿using System;
+using ChatSystem.Client.Core.Interfaces.Database;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace ChatSystem.Client.Tests.Infrastructure.Repositories;
 

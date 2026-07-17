@@ -1,5 +1,5 @@
-﻿using ChatSystem.Client.Infrastructure.Cryptography;
-using System;
+﻿using System;
+using ChatSystem.Client.Infrastructure.Cryptography;
 
 namespace ChatSystem.Client.Tests.Infrastructure.Cryptography;
 

@@ -1,8 +1,8 @@
-﻿using ChatSystem.Client.Core.Domain.Message;
-using ChatSystem.Client.Core.Interfaces.Ids;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ChatSystem.Client.Core.Domain.Message;
+using ChatSystem.Client.Core.Interfaces.Ids;
 
 namespace ChatSystem.Client.Tests.Core.IdTests;
 

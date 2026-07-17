@@ -1,8 +1,8 @@
-﻿using ChatSystem.Client.Core.Domain.User;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Interfaces.Ids;
 using ChatSystem.Client.Infrastructure.Repositories;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ChatSystem.Client.Tests.Infrastructure.Repositories;
 

@@ -1,7 +1,7 @@
-﻿using ChatSystem.Client.Core.Interfaces.Cryptography;
+﻿using System.Threading.Tasks;
+using ChatSystem.Client.Core.Interfaces.Cryptography;
 using ChatSystem.Client.Infrastructure.Cryptography;
 using ChatSystem.Client.Tests.Infrastructure.Repositories;
-using System.Threading.Tasks;
 
 namespace ChatSystem.Client.Tests.Infrastructure.Cryptography;
 
