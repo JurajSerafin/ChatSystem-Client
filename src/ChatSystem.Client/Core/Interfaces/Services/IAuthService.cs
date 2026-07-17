@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.User;
 
-namespace ChatSystem.Client.Core.Interfaces.Networking.Auth;
+namespace ChatSystem.Client.Core.Interfaces.Services;
 
 /// <summary>
 /// Interface for a service orchestrating user authentication and local session management.

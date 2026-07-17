@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.Chat;
 using ChatSystem.Client.Core.Domain.Message;
 
-namespace ChatSystem.Client.Core.Interfaces.Networking.Message;
+namespace ChatSystem.Client.Core.Interfaces.Services;
 
 /// <summary>
 /// Interface for a service responsible for the End-to-End Encrypted (E2EE) messaging pipeline.

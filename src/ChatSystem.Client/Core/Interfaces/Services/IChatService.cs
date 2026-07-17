@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.Chat;
 using ChatSystem.Client.Core.Domain.User;
 
-namespace ChatSystem.Client.Core.Interfaces.Networking.Chat;
+namespace ChatSystem.Client.Core.Interfaces.Services;
 
 /// <summary>
 /// Interface for a service responsible for managing chat room entities and their participants.

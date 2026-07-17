@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.User;
 
-namespace ChatSystem.Client.Core.Interfaces.Networking.User;
+namespace ChatSystem.Client.Core.Interfaces.Services;
 
 /// <summary>
 /// Interface for a service responsible for querying and caching public user profiles.
