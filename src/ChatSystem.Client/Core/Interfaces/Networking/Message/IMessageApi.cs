@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using ChatSystem.Client.Core.Domain.Chat;
-using ChatSystem.Client.Core.Interfaces.Networking.Message.DTOs;
-using Refit;
 using System.Threading;
 using System.Threading.Tasks;
+using ChatSystem.Client.Core.Domain.Chat;
 using ChatSystem.Client.Core.Domain.Message;
+using ChatSystem.Client.Core.Interfaces.Networking.Message.DTOs;
+using Refit;
 
 namespace ChatSystem.Client.Core.Interfaces.Networking.Message;
 
@@ -59,7 +59,16 @@ internal interface IMessageApi {
     [Get("/messages/undelivered")]
     Task<IReadOnlyList<SingleMessageResponse>> GetUndeliveredAsync(
         [Query] int limit,
-        [Query] MessageId afterId,
+        [Query] MessageId? afterId,
         CancellationToken cancellationToken = default
     );
+
+    /// <summary>
+    /// Retrieves the encrypted symmetric key for a specific message,
+    /// wrapped with the calling user's public key.
+    /// </summary>
+    [Get("/messages/{id}/key")]
+    Task<GetEncryptedKeyResponse> GetEncryptedKeyAsync(
+        MessageId id,
+        CancellationToken cancellationToken = default);
 }
