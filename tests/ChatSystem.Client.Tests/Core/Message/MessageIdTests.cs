@@ -4,7 +4,7 @@ using System.Linq;
 using ChatSystem.Client.Core.Domain.Message;
 using ChatSystem.Client.Core.Interfaces.Ids;
 
-namespace ChatSystem.Client.Tests.Core.IdTests;
+namespace ChatSystem.Client.Tests.Core.Message;
 
 public class MessageIdTests {
     [Fact]
