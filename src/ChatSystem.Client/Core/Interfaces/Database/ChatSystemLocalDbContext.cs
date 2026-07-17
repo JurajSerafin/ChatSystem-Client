@@ -4,6 +4,7 @@ using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
+using ChatSystem.Client.Core.Interfaces.Cryptography;
 
 namespace ChatSystem.Client.Core.Interfaces.Database;
 
@@ -60,6 +61,8 @@ public sealed class ChatSystemLocalDbContext(
     /// </summary>
     public DbSet<CachedMessage> Messages { get; set; }
 
+    public DbSet<EncryptedKeyMaterial> KeyStore { get; set; }
+
     /// <summary>
     /// Overrides default model building configurations to enforce custom mappings, primary keys, value converters, relationships, and performance indexes.
     /// </summary>
@@ -93,6 +96,10 @@ public sealed class ChatSystemLocalDbContext(
 
         modelBuilder.Entity<CachedMessage>()
             .HasKey(m => m.Id);
+
+
+        modelBuilder.Entity<EncryptedKeyMaterial>()
+            .HasKey(k => k.Id);
     }
 
     /// <summary>
@@ -190,6 +197,14 @@ public sealed class ChatSystemLocalDbContext(
             .HasConversion(
                 id => id.Value,
                 guid => ChatId.Create(guid)
+            );
+
+
+        modelBuilder.Entity<EncryptedKeyMaterial>()
+            .Property(k => k.StoredAt)
+            .HasConversion(
+                dto => dto.Ticks,
+                ticks => new DateTimeOffset(ticks, TimeSpan.Zero)
             );
     }
 

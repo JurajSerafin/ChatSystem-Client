@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ChatSystem.Client.Core.Interfaces.Cryptography;
+﻿namespace ChatSystem.Client.Core.Interfaces.Cryptography;
 
 /// <summary>
 /// Parameters defining the work-factor for a Key Derivation Function.
@@ -18,7 +16,7 @@ internal interface IKeyDerivationService  {
     /// Generates a cryptographically secure random salt.
     /// </summary>
     /// <returns>A cryptographic salt - vector of random bytes.</returns>
-    public IList<byte> GenerateSalt();
+    public byte[] GenerateSalt();
 
     /// <summary>
     /// Derives a fixed-length cryptographic key from a plaintext password and salt.
@@ -27,7 +25,7 @@ internal interface IKeyDerivationService  {
     /// <param name="salt">The cryptographic salt.</param>
     /// <param name="kdfParams">The cost factors and parameters for the specific KDF.</param>
     /// <returns>The derived cryptographic key.</returns>
-    public string DeriveKey(string password, IList<byte> salt, IAbstractKdfParams kdfParams);
+    public byte[] DeriveKey(string password, byte[] salt, KdfParams kdfParams);
 
     /// <summary>
     /// Returns the current recommended default parameters for key derivation.
@@ -38,9 +36,9 @@ internal interface IKeyDerivationService  {
     /// <summary>
     /// Parses an algorithm identifier string into a structured KdfParams object.
     /// </summary>
-    /// <param name="algId">The raw algorithm identification string.</param>
+    /// <param name="algoritmParamsToken">The raw algorithm identification string.</param>
     /// <returns>The parsed KdfParams.</returns>
-    public KdfParams ParseAlgorithmId(string algId);
+    public KdfParams ParseAlgorithmKdfParams(string algoritmParamsToken);
 
     /// <summary>
     /// Checks if the provided algorithm identifier uses outdated parameters requiring an upgrade.
