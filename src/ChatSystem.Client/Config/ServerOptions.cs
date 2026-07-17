@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ChatSystem.Client.Config;
+﻿namespace ChatSystem.Client.Config;
 
 /// <summary>
 /// Server connection settings loaded from appsettings.json.

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Interfaces.Networking.User.DTOs;
 
