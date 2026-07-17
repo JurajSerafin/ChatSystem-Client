@@ -1,7 +1,7 @@
-using ChatSystem.Client.Core.Domain.Chat;
-using ChatSystem.Client.Core.Domain.User;
 using System;
 using System.ComponentModel.DataAnnotations;
+using ChatSystem.Client.Core.Domain.Chat;
+using ChatSystem.Client.Core.Domain.User;
 
 namespace ChatSystem.Client.Core.Domain.Message;
 

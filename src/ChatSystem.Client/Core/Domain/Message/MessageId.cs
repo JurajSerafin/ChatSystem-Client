@@ -1,6 +1,6 @@
-﻿using ChatSystem.Client.Core.Interfaces.Ids;
-using System;
+﻿using System;
 using System.Text.Json.Serialization;
+using ChatSystem.Client.Core.Interfaces.Ids;
 
 namespace ChatSystem.Client.Core.Domain.Message;
 
