@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
+using ChatSystem.Client.Core.Domain.Chat;
+using ChatSystem.Client.Core.Domain.Message;
 
 namespace ChatSystem.Client.Core.Interfaces.Networking.Chat.DTOs;
 
@@ -13,7 +15,7 @@ namespace ChatSystem.Client.Core.Interfaces.Networking.Chat.DTOs;
 /// <param name="LastMessageId">The ID of the most recent message in the chat, if any exist.</param>
 internal record SingleChatResponse(
     [property: JsonPropertyName("id")]
-    string Id,
+    ChatId Id,
 
     [property: JsonPropertyName("created_at")]
     DateTimeOffset CreatedAt,
@@ -25,5 +27,5 @@ internal record SingleChatResponse(
     string? Name,
 
     [property: JsonPropertyName("last_message_id")]
-    string? LastMessageId
+    MessageId? LastMessageId
 );
