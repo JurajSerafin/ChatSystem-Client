@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChatSystem.Client.Presentation.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignWidth="400" d:DesignHeight="500"
+             x:Class="ChatSystem.Client.Presentation.Views.LoginView"
+             x:DataType="vm:LoginViewModel"
+             x:CompileBindings="True">
+
+	<Grid RowDefinitions="*,Auto,*">
+		<StackPanel Grid.Row="1"
+                    Width="320"
+                    Spacing="16"
+                    HorizontalAlignment="Center">
+
+			<TextBlock Text="ChatSystem"
+                       FontSize="32"
+                       FontWeight="Light"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,8"/>
+
+			<TextBlock Text="Sign in"
+                       FontSize="16"
+                       Opacity="0.7"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,16"/>
+
+			<TextBox Text="{Binding Login}"
+                     PlaceholderText="Username"
+                     IsEnabled="{Binding !IsBusy}"/>
+
+			<TextBox Text="{Binding Password}"
+                     PasswordChar="•"
+                     PlaceholderText="Password"
+                     IsEnabled="{Binding !IsBusy}"/>
+
+			<Button Content="Sign In"
+                    Command="{Binding SubmitCommand}"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center"
+                    Padding="12,8"
+                    Margin="0,8,0,0"/>
+
+			<TextBlock Text="{Binding ErrorMessage}"
+                       Foreground="#D32F2F"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       IsVisible="{Binding HasError}"/>
+
+			<ProgressBar IsIndeterminate="True"
+                         IsVisible="{Binding IsBusy}"
+                         Height="4"
+                         Margin="0,8,0,0"/>
+		</StackPanel>
+	</Grid>
+</UserControl>

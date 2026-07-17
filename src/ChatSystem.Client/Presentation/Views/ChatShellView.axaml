@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChatSystem.Client.Presentation.ViewModels"
+             x:Class="ChatSystem.Client.Presentation.Views.ChatShellView"
+             x:DataType="vm:ChatShellViewModel"
+             x:CompileBindings="True">
+
+	<Grid ColumnDefinitions="300, 1, *">
+		<!--Sidebar-->
+		<Grid Grid.Column="0" RowDefinitions="Auto, *, Auto" >
+			<!--App Name + Search Button-->
+			<Border Grid.Row="0" Padding="16" Background="#1A000000">
+				<Grid ColumnDefinitions="*, Auto">
+					<TextBlock Text="Chats" FontSize="20" VerticalAlignment="Center"></TextBlock>
+					<Button Grid.Column="1" Content="+ New Chat"></Button>
+				</Grid>
+			</Border>
+			
+			<!--Chat List-->
+			<ContentControl Grid.Row="1" Content="{Binding SidebarPane}"></ContentControl>
+			
+			<!--User Profile & Logout-->
+			<Border Grid.Row="2" Padding="12" Background="#1A000000">
+				<Button Content="Log Out"
+						Command="{Binding LogoutCommand}"
+						HorizontalAlignment="Stretch"
+						HorizontalContentAlignment="Center"
+				></Button>
+			</Border>			
+		</Grid>
+		
+		<!--Separator Line-->
+		<Rectangle Grid.Column="1" Fill="#33808080"></Rectangle>
+		
+		<!--Dynamic Conversation Content-->
+		<ContentControl Grid.Column="2" Content="{Binding CurrDetailPane}"></ContentControl>
+	</Grid>
+</UserControl>
