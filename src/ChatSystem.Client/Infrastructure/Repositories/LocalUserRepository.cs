@@ -1,10 +1,10 @@
-﻿using ChatSystem.Client.Core.Domain.User;
-using ChatSystem.Client.Core.Interfaces.Database;
-using ChatSystem.Client.Core.Interfaces.Repositories;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ChatSystem.Client.Core.Domain.User;
+using ChatSystem.Client.Core.Interfaces.Database;
+using ChatSystem.Client.Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatSystem.Client.Infrastructure.Repositories;
