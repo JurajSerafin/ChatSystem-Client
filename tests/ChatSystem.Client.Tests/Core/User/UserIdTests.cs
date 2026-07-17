@@ -1,5 +1,4 @@
-﻿// UserIdTests.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Interfaces.Ids;
