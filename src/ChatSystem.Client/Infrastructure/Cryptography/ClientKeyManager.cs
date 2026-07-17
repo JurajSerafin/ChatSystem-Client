@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ChatSystem.Client.Core.Interfaces.Cryptography;
+using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ChatSystem.Client.Core.Interfaces.Cryptography;
 
 namespace ChatSystem.Client.Infrastructure.Cryptography;
 
@@ -17,7 +19,7 @@ internal class ClientKeyManager : IClientKeyManager {
 
     private readonly IKeyStore _keyStore;
 
-    private string? _decryptedPrivateKey;
+    private byte[]? _decryptedPrivateKeyBytes;
 
     public ClientKeyManager(
         IClientEncryptionService cryptoService,
@@ -36,19 +38,24 @@ internal class ClientKeyManager : IClientKeyManager {
         var kdfParams = _keyDerivationService.GetDefaultParams();
         var mek = _keyDerivationService.DeriveKey(password, salt, kdfParams);
 
-        var encryptedPrivateKey = _cryptoService.EncryptSymmetric(keyPair.PrivateKey, mek);
+        try {
+            var encryptedPrivateKey = _cryptoService.EncryptSymmetric(keyPair.PrivateKey, mek);
 
-        await _keyStore.StoreAsync(new EncryptedKeyMaterial {
-            Algorithm = kdfParams.ToAlgorithmId(),
-            EncryptedKey = encryptedPrivateKey,
-            Id = _keyStore.KeyId,
-            Salt = salt,
-            StoredAt = DateTimeOffset.UtcNow
-        }, cancellationToken);
+            await _keyStore.StoreAsync(new EncryptedKeyMaterial {
+                Algorithm = kdfParams.ToAlgorithmId(),
+                EncryptedKey = encryptedPrivateKey,
+                Id = _keyStore.KeyId,
+                Salt = salt,
+                StoredAt = DateTimeOffset.UtcNow
+            }, cancellationToken);
 
-        _decryptedPrivateKey = keyPair.PrivateKey;
+            _decryptedPrivateKeyBytes = Encoding.UTF8.GetBytes(keyPair.PrivateKey);
 
-        return keyPair;
+            return keyPair;
+        } finally {
+            CryptographicOperations.ZeroMemory(mek);
+        }
+
     }
 
     public async Task UnlockPrivateKeyAsync(string password, CancellationToken cancellationToken = default) {
@@ -60,22 +67,32 @@ internal class ClientKeyManager : IClientKeyManager {
         var mek = _keyDerivationService.DeriveKey(password, storedKeyMaterial.Salt, kdfParams);
 
         try {
-            _decryptedPrivateKey = _cryptoService.DecryptSymmetric(storedKeyMaterial.EncryptedKey, mek);
+            string decryptedKeyPem = _cryptoService.DecryptSymmetric(storedKeyMaterial.EncryptedKey, mek);
+            _decryptedPrivateKeyBytes = Encoding.UTF8.GetBytes(decryptedKeyPem);
         }
         catch (Exception e) {
             throw new InvalidOperationException(
                 "Attempt to unlock a stored key was unsuccessful due to incorrect password or corrupted key material", e
             );
         }
+        finally {
+            CryptographicOperations.ZeroMemory(mek);
+        }
     }
 
     public void LockPrivateKey() {
-        _decryptedPrivateKey = null;
+        if (_decryptedPrivateKeyBytes != null) {
+            CryptographicOperations.ZeroMemory(_decryptedPrivateKeyBytes);
+            _decryptedPrivateKeyBytes = null;
+        }
     }
 
     public string GetPrivateKey() {
-        return _decryptedPrivateKey
-               ?? throw new InvalidOperationException("Private key that is being returned is unlocked.");
+        if (_decryptedPrivateKeyBytes == null) {
+            throw new InvalidOperationException("Private key that is being returned is unlocked.");
+        }
+
+        return Encoding.UTF8.GetString(_decryptedPrivateKeyBytes);
     }
 
     public async Task DeleteProtectedKeysAsync(CancellationToken cancellationToken = default) {
