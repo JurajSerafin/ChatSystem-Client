@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 
 namespace ChatSystem.Client.Presentation.Views {
-    internal partial class RegistrationView : UserControl {
+    public partial class RegistrationView : UserControl {
         public RegistrationView() {
             InitializeComponent();
         }

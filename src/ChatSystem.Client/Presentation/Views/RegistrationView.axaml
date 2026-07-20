@@ -58,12 +58,19 @@
                      Classes.match="{Binding IsPasswordsMatch}"
                      Classes.mismatch="{Binding IsPasswordsMismatch}"/>
 
-			<Button Content="Sign In"
+			<Button Content="Submit"
                     Command="{Binding SubmitCommand}"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Center"
                     Padding="12,8"
                     Margin="0,8,0,0"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="Already have an account? " VerticalAlignment="Center" Opacity="0.7"/>
+                <HyperlinkButton Content="Sign in"
+                                 Command="{Binding NavigateToLoginCommand}"
+                                 VerticalAlignment="Center"/>
+            </StackPanel>
 
 
 			<TextBlock Text="{Binding ErrorMessage}"
