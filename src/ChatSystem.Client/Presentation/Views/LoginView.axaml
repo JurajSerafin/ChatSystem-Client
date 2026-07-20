@@ -28,7 +28,7 @@
                        Margin="0,0,0,16"/>
 
 			<TextBox Text="{Binding Login}"
-                     PlaceholderText="Username"
+                     PlaceholderText="Login"
                      IsEnabled="{Binding !IsBusy}"/>
 
 			<TextBox Text="{Binding Password}"
@@ -42,6 +42,16 @@
                     HorizontalContentAlignment="Center"
                     Padding="12,8"
                     Margin="0,8,0,0"/>
+
+            <StackPanel Orientation="Horizontal">
+                <HyperlinkButton
+                    Content="Create an Account"
+                    Command="{Binding NavigateToRegistrationScreenCommand}"
+                    VerticalAlignment="Center"
+                />
+
+            </StackPanel>
+
 
 			<TextBlock Text="{Binding ErrorMessage}"
                        Foreground="#D32F2F"

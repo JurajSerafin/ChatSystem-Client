@@ -45,6 +45,14 @@ internal partial class LoginViewModel : ViewModelBase {
     /// </summary>
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasSuccess))]
+    private string? _successMessage;
+
+    public bool HasSuccess => !string.IsNullOrEmpty(SuccessMessage);
+
+
     /// <summary>
     /// Occurs when the authentication request completes successfully.
     /// </summary>
@@ -68,6 +76,7 @@ internal partial class LoginViewModel : ViewModelBase {
     private async Task SubmitAsync() {
         IsBusy = true;
         ErrorMessage = null;
+        SuccessMessage = null;
         bool loginSuccess = false;
 
         try {
@@ -105,8 +114,14 @@ internal partial class LoginViewModel : ViewModelBase {
     /// <summary>
     /// Transitions the application to the initial post-login screen.
     /// </summary>
+    [RelayCommand]
     private void NavigateToNextScreen() {
         _navigation.NavigateTo<ChatListViewModel>();
+    }
+
+    [RelayCommand]
+    private void NavigateToRegistrationScreen() {
+        _navigation.NavigateTo<RegistrationViewModel>();
     }
 
     /// <summary>
@@ -119,7 +134,27 @@ internal partial class LoginViewModel : ViewModelBase {
            && !string.IsNullOrWhiteSpace(Password);
     }
 
-    partial void OnLoginChanged(string value) => SubmitCommand.NotifyCanExecuteChanged();
-    partial void OnPasswordChanged(string value) => SubmitCommand.NotifyCanExecuteChanged();
-    partial void OnIsBusyChanged(bool value) => SubmitCommand.NotifyCanExecuteChanged();
+    partial void OnLoginChanged(string value) {
+        SuccessMessage = null;
+
+        ErrorMessage = null;
+
+        SubmitCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnPasswordChanged(string value) {
+        SuccessMessage = null;
+
+        ErrorMessage = null;
+
+        SubmitCommand.NotifyCanExecuteChanged();
+    }
+
+    partial void OnIsBusyChanged(bool value) {
+        SuccessMessage = null;
+
+        ErrorMessage = null;
+
+        SubmitCommand.NotifyCanExecuteChanged();
+    }
 }
