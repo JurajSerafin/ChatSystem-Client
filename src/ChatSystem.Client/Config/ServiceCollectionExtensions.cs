@@ -1,26 +1,27 @@
+using ChatSystem.Client.Core.Domain.Chat;
 using ChatSystem.Client.Core.Interfaces.Cryptography;
 using ChatSystem.Client.Core.Interfaces.Database;
 using ChatSystem.Client.Core.Interfaces.Networking.Auth;
 using ChatSystem.Client.Core.Interfaces.Networking.Chat;
 using ChatSystem.Client.Core.Interfaces.Networking.Message;
 using ChatSystem.Client.Core.Interfaces.Networking.User;
+using ChatSystem.Client.Core.Interfaces.Presentation;
+using ChatSystem.Client.Core.Interfaces.Repositories;
+using ChatSystem.Client.Core.Interfaces.Services;
+using ChatSystem.Client.Core.Interfaces.Session;
 using ChatSystem.Client.Infrastructure.Cryptography;
+using ChatSystem.Client.Infrastructure.Database;
 using ChatSystem.Client.Infrastructure.Networking;
+using ChatSystem.Client.Infrastructure.Presentation;
+using ChatSystem.Client.Infrastructure.Repositories;
+using ChatSystem.Client.Infrastructure.Services;
+using ChatSystem.Client.Infrastructure.Session;
 using ChatSystem.Client.Presentation.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
 using System.IO;
-using ChatSystem.Client.Core.Domain.Chat;
-using ChatSystem.Client.Core.Interfaces.Presentation;
-using ChatSystem.Client.Core.Interfaces.Repositories;
-using ChatSystem.Client.Core.Interfaces.Services;
-using ChatSystem.Client.Core.Interfaces.Session;
-using ChatSystem.Client.Infrastructure.Presentation;
-using ChatSystem.Client.Infrastructure.Repositories;
-using ChatSystem.Client.Infrastructure.Services;
-using ChatSystem.Client.Infrastructure.Session;
 
 namespace ChatSystem.Client.Config;
 
@@ -75,23 +76,13 @@ public static class ServiceCollectionExtensions {
     }
 
     private static void AddDbContext(IServiceCollection services) {
-        const string appName = "ChatSystem";
+        services.AddSingleton<IProfilePathProvider, ProfilePathProvider>();
 
-        const string dbFileName = "chatsystem.db";
+        services.AddDbContext<ChatSystemLocalDbContext>((sp, options) => {
+            var pathProvider = sp.GetRequiredService<IProfilePathProvider>();
 
-
-        services.AddDbContext<ChatSystemLocalDbContext>(options => {
-            var dbFolder = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                appName
-            );
-
-            Directory.CreateDirectory(dbFolder);
-
-            var dbPath = Path.Combine(dbFolder, dbFileName);
-
+            var dbPath = pathProvider.GetDatabasePath();
             options.UseSqlite($"Data Source={dbPath}");
-
         });
     }
 
