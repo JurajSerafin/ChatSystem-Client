@@ -19,15 +19,32 @@ namespace ChatSystem.Client.Presentation.ViewModels {
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasPassword1))]
+        [NotifyPropertyChangedFor(nameof(IsPassword2Enabled))]
+        [NotifyPropertyChangedFor(nameof(IsPasswordsMismatch))]
+        [NotifyPropertyChangedFor(nameof(IsPasswordsMatch))]
         private string _password1 = string.Empty;
 
         public bool HasPassword1 => !string.IsNullOrEmpty(Password1);
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasPassword2))]
+        [NotifyPropertyChangedFor(nameof(IsPasswordsMismatch))]
+        [NotifyPropertyChangedFor(nameof(IsPasswordsMatch))]
         private string _password2 = string.Empty;
+
 
         [ObservableProperty]
         private bool _isBusy;
+
+        public bool HasPassword2 => !string.IsNullOrEmpty(Password2);
+
+        public bool IsPassword2Enabled => HasPassword1 && !IsBusy;
+
+        public bool IsPasswordsMismatch => IsPassword2Enabled && HasPassword2 && Password1 != Password2;
+
+        public bool IsPasswordsMatch => IsPassword2Enabled && HasPassword2 && Password1 == Password2;
+
+
 
         /// <summary>
         /// Gets or sets the error message displayed to the user if authentication fails.
@@ -98,26 +115,22 @@ namespace ChatSystem.Client.Presentation.ViewModels {
 
 
         partial void OnLoginChanged(string value) {
-            SuccessMessage = null;
-
             SubmitCommand.NotifyCanExecuteChanged();
         }
 
         partial void OnPassword1Changed(string value) {
-            SuccessMessage = null;
+            if (string.IsNullOrEmpty(Password1)) {
+                Password2 = string.Empty;
+            }
 
             SubmitCommand.NotifyCanExecuteChanged();
         }
 
         partial void OnPassword2Changed(string value) {
-            SuccessMessage = null;
-
             SubmitCommand.NotifyCanExecuteChanged();
         }
 
         partial void OnIsBusyChanged(bool value) {
-            SuccessMessage = null;
-
             SubmitCommand.NotifyCanExecuteChanged();
         }
 
