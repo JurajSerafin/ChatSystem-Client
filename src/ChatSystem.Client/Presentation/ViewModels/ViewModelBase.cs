@@ -13,5 +13,5 @@ internal abstract class ViewModelBase : ObservableObject, IDisposable
     /// Performs application-defined tasks associated with freeing, releasing, or resetting resources.
     /// Override in derived classes to unsubscribe from network events or clear cryptographic buffers.
     /// </summary>
-    public void Dispose() {}
+    public virtual void Dispose() {}
 }
