@@ -1,0 +1,13 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChatSystem.Client.Presentation.ViewModels"
+             x:Class="ChatSystem.Client.Presentation.Views.EmptyView"
+             x:DataType="vm:EmptyViewModel"
+             x:CompileBindings="True">
+
+    <TextBlock Text="Select a chat to start messaging"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               FontSize="16"
+               Opacity="0.5"/>
+</UserControl>
