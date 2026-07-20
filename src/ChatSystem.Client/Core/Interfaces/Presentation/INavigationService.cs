@@ -1,4 +1,5 @@
 ﻿using ChatSystem.Client.Presentation.ViewModels;
+using System;
 
 namespace ChatSystem.Client.Core.Interfaces.Presentation {
     /// <summary>
@@ -9,6 +10,6 @@ namespace ChatSystem.Client.Core.Interfaces.Presentation {
         /// Replaces the current view with a new instance of <typeparamref name="TViewModel"/>,
         /// resolved from the DI container.
         /// </summary>
-        public void NavigateTo<TViewModel>() where TViewModel : ViewModelBase;
+        public void NavigateTo<TViewModel>(Action<TViewModel>? initAction = null) where TViewModel : ViewModelBase;
     }
 }
