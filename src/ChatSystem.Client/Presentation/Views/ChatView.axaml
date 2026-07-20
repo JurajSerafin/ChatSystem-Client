@@ -11,7 +11,7 @@
              x:CompileBindings="True">
 
     <UserControl.Resources>
-        <converters:BubbleAlignmentConverter x:Key="BubbleAlignmentConverter"/>
+        <converters:MessageBubbleAlignmentConverter x:Key="MessageBubbleAlignmentConverter"/>
     </UserControl.Resources>
 
     <UserControl.Styles>
@@ -65,7 +65,7 @@
                                 MaxWidth="400"
                                 HorizontalAlignment="{
                                     Binding SenderId,
-                                    Converter={StaticResource BubbleAlignmentConverter},
+                                    Converter={StaticResource MessageBubbleAlignmentConverter},
                                     ConverterParameter={Binding $parent[UserControl].((vm:ChatViewModel)DataContext).CurrentUserId}
                                 }">
                             
