@@ -1,0 +1,113 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChatSystem.Client.Presentation.ViewModels"
+             xmlns:models="using:ChatSystem.Client.Core.Domain.Message"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:converters="clr-namespace:ChatSystem.Client.Infrastructure.Presentation.Converters"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             x:Class="ChatSystem.Client.Presentation.Views.ChatView"
+             x:DataType="vm:ChatViewModel"
+             x:CompileBindings="True">
+
+    <UserControl.Resources>
+        <converters:BubbleAlignmentConverter x:Key="BubbleAlignmentConverter"/>
+    </UserControl.Resources>
+
+    <UserControl.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto, *, Auto">
+        
+        <Border  Grid.Row="0" Padding="16,12" Background="#0D000000">
+            <Grid ColumnDefinitions="*, Auto">
+                <TextBlock Text="{Binding CurrentChat.Name}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           TextTrimming="CharacterEllipsis"/>
+
+                <Button Grid.Column="1" 
+                        Command="{Binding CloseCommand}"
+                        ToolTip.Tip="Close"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="8"
+                        Cursor="Hand">
+                    <TextBlock Text="✕" FontSize="18" FontWeight="Bold" Opacity="0.7"/>
+                </Button>
+            </Grid>
+        </Border>
+
+
+        <ListBox Grid.Row="1" 
+                 ItemsSource="{Binding Messages}" 
+                 Background="Transparent" 
+                 BorderThickness="0"
+                 Padding="16">
+            
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="models:CachedMessage">
+                    <Grid>
+
+                        <Border Padding="12,8" 
+                                CornerRadius="12" 
+                                MaxWidth="400"
+                                HorizontalAlignment="{
+                                    Binding SenderId,
+                                    Converter={StaticResource BubbleAlignmentConverter},
+                                    ConverterParameter={Binding $parent[UserControl].((vm:ChatViewModel)DataContext).CurrentUserId}
+                                }">
+                            
+                            <Border.Background>
+                                <SolidColorBrush Color="#22808080"/>
+                            </Border.Background>
+
+                            <StackPanel Spacing="4">
+                                <TextBlock Text="{Binding PlainText}" 
+                                           TextWrapping="Wrap" 
+                                           FontSize="14"/>
+                                
+                                <TextBlock Text="{Binding CreatedAt, StringFormat='HH:mm'}" 
+                                           FontSize="10" 
+                                           Opacity="0.5" 
+                                           HorizontalAlignment="Right"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Grid.Row="2" Padding="16" Background="#0D000000">
+            <Grid ColumnDefinitions="*, Auto" >
+                <TextBox Grid.Column="0" 
+                         Text="{Binding MessageText}" 
+                         PlaceholderText="..." 
+                         IsEnabled="{Binding !IsBusy}"
+                         Margin="0,0,12,0"
+                         MaxLines="4"
+                         AcceptsReturn="False"/>
+
+                <Button Grid.Column="1" 
+                        Content="Send ➔" 
+                        Command="{Binding SendMessageCommand}"
+                        IsEnabled="{Binding !IsBusy}"
+                        VerticalAlignment="Bottom"
+                        Padding="16,10"/>
+            </Grid>
+
+        </Border>
+
+    </Grid>
+</UserControl>
