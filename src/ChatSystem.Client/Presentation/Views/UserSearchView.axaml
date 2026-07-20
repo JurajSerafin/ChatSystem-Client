@@ -1,0 +1,89 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ChatSystem.Client.Presentation.ViewModels"
+             xmlns:models="using:ChatSystem.Client.Core.Domain.User"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="500"
+             x:Class="ChatSystem.Client.Presentation.Views.UserSearchView"
+             x:DataType="vm:UserSearchViewModel"
+             x:CompileBindings="True">
+
+    <UserControl.Styles>
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#1A808080" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto, Auto, *" Margin="24">
+        
+
+        <Grid Grid.Row="0" ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,16">
+            <TextBox Grid.Column="0" 
+                     Text="{Binding SearchQuery}" 
+                     PlaceholderText="..." 
+                     IsEnabled="{Binding !IsBusy}"
+                     VerticalAlignment="Center"
+                     Margin="0,0,8,0"/>
+
+            <Button Grid.Column="1" 
+                    Content="Search" 
+                    Command="{Binding SearchCommand}"
+                    IsEnabled="{Binding !IsBusy}"
+                    Padding="16,8"
+                    Margin="0,0,8,0"/>
+
+            <Button Grid.Column="2" 
+                    Content="Cancel" 
+                    Command="{Binding CancelCommand}"
+                    Padding="16,8"/>
+        </Grid>
+
+
+        <StackPanel Grid.Row="1" Spacing="8">
+            <Border Background="#1AD32F2F" 
+                    BorderBrush="#D32F2F" 
+                    BorderThickness="1" 
+                    CornerRadius="4" 
+                    Padding="12,8" 
+                    IsVisible="{Binding HasError}">
+                <TextBlock Text="{Binding ErrorMessage}" 
+                           Foreground="#D32F2F" 
+                           HorizontalAlignment="Center" 
+                           TextWrapping="Wrap"/>
+            </Border>
+
+            <ProgressBar IsIndeterminate="True" 
+                         IsVisible="{Binding IsBusy}" 
+                         Height="4" 
+                         Margin="0,0,0,12"/>
+        </StackPanel>
+
+
+        <ListBox Grid.Row="2" 
+                 ItemsSource="{Binding SearchResults}" 
+                 SelectedItem="{Binding SelectedUser}"
+                 IsVisible="{Binding !IsBusy}"
+                 Background="Transparent"
+                 BorderThickness="0">
+            
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="models:CachedUser">
+                    <Border
+                        Padding="16"
+                        CornerRadius="8"
+                        Margin="0,4"
+                        Background="#0D000000"
+                        BorderBrush="#22808080"
+                        BorderThickness="1">
+
+                        <TextBlock Text="{Binding Login}" FontSize="16" FontWeight="SemiBold"/>
+
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        
+    </Grid>
+</UserControl>
