@@ -14,18 +14,21 @@ internal class NavigationService : INavigationService {
         _mainWindow = mainWindow;
     }
 
-    public void NavigateTo<TViewModel>() where TViewModel : ViewModelBase {
+    public void NavigateTo<TViewModel>(Action<TViewModel>? initAction = null) where TViewModel : ViewModelBase {
         CleanupOutgoingViewModelSubscribingMemory();
 
-        ResolveAndAssignNewViewModel<TViewModel>();
+        ResolveAndAssignNewViewModel<TViewModel>(initAction);
     }
 
     private void CleanupOutgoingViewModelSubscribingMemory() {
         _mainWindow.CurrentViewModel.Dispose();
     }
 
-    private void ResolveAndAssignNewViewModel<TViewModel>() where TViewModel : ViewModelBase {
+    private void ResolveAndAssignNewViewModel<TViewModel>(Action<TViewModel>? initAction = null) where TViewModel : ViewModelBase {
         var viewModel = _services.GetRequiredService<TViewModel>();
+
+        initAction?.Invoke(viewModel);
+
         _mainWindow.CurrentViewModel = viewModel;
     }
 
