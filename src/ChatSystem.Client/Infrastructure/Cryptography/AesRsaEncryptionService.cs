@@ -25,9 +25,11 @@ internal sealed class AesRsaEncryptionService : IClientEncryptionService {
             PublicKey = rsa.ExportRSAPublicKeyPem()
         };
     }
+
     public byte[] GenerateSymmetricKey() {
         return RandomNumberGenerator.GetBytes(AesKeySize);
     }
+
     public byte[] EncryptSymmetric(string plaintext, byte[] key) {
         ValidateAesKeySize(key);
 
@@ -67,6 +69,7 @@ internal sealed class AesRsaEncryptionService : IClientEncryptionService {
 
         return Encoding.UTF8.GetString(plaintext);
     }
+
     public byte[] WrapKey(byte[] symmetricKey, string publicKeyPem) {
         using var rsa = RSA.Create();
 
@@ -74,6 +77,7 @@ internal sealed class AesRsaEncryptionService : IClientEncryptionService {
 
         return rsa.Encrypt(symmetricKey, RSAEncryptionPadding.OaepSHA256);
     }
+
     public byte[] UnwrapKey(byte[] wrappedKey, string privateKeyPem) {
         using var rsa = RSA.Create();
 
@@ -81,12 +85,14 @@ internal sealed class AesRsaEncryptionService : IClientEncryptionService {
 
         return rsa.Decrypt(wrappedKey, RSAEncryptionPadding.OaepSHA256);
     }
+
     public byte[] Sign(byte[] data, string privateKey) {
         using var rsa = RSA.Create();
         rsa.ImportFromPem(privateKey);
 
         return rsa.SignData(data, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
     }
+
     public bool Verify(byte[] data, byte[] signature, string publicKeyPem) {
         using var rsa = RSA.Create();
 
@@ -94,6 +100,7 @@ internal sealed class AesRsaEncryptionService : IClientEncryptionService {
 
         return rsa.VerifyData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
     }
+
     private byte[] PackAesAndReturn(byte[] nonce, byte[] ciphertext, byte[] tag) {
         var package = new byte[NonceSize + TagSize + ciphertext.Length];
 
