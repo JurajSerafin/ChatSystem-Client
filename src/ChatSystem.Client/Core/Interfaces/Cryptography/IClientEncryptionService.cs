@@ -67,4 +67,9 @@ internal interface IClientEncryptionService {
     /// <param name="publicKeyPem"></param>
     /// <returns>True if the signature is valid, false otherwise.</returns>
     public bool Verify(byte[] data, byte[] signature, string publicKeyPem);
+
+    /// <summary>
+    /// Derives the public key from a given private key in PEM format.
+    /// </summary>
+    public string DerivePublicKey(string privateKeyPem);
 }

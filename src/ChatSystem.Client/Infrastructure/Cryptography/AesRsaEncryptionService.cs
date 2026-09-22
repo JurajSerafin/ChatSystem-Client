@@ -101,6 +101,14 @@ internal sealed class AesRsaEncryptionService : IClientEncryptionService {
         return rsa.VerifyData(data, signature, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
     }
 
+    public string DerivePublicKey(string privateKeyPem) {
+        using var rsa = RSA.Create();
+
+        rsa.ImportFromPem(privateKeyPem);
+
+        return rsa.ExportSubjectPublicKeyInfoPem();
+    }
+
     private byte[] PackAesAndReturn(byte[] nonce, byte[] ciphertext, byte[] tag) {
         var package = new byte[NonceSize + TagSize + ciphertext.Length];
 
