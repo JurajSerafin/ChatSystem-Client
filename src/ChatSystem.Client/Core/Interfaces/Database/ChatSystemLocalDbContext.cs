@@ -233,12 +233,6 @@ public sealed class ChatSystemLocalDbContext(
             .WithMany()
             .HasForeignKey(m => m.ChatId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        modelBuilder.Entity<CachedChat>()
-            .HasOne<CachedMessage>()
-            .WithMany()
-            .HasForeignKey(c => c.LastMessageId)
-            .OnDelete(DeleteBehavior.SetNull);
     }
 
     /// <summary>
