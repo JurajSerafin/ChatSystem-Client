@@ -35,47 +35,56 @@ internal sealed class AuthService : IAuthService {
     }
 
     public async Task<CachedUser> RegisterAsync(string login, string password, CancellationToken cancellationToken = default) {
+        try {
 
-        _profilePathProvider.SetActiveProfile(login);
+            _profilePathProvider.SetActiveProfile(login);
 
-        var sessionProvider = _sessionScopeService.BeginSession();
+            var sessionProvider = _sessionScopeService.BeginSession();
 
-        await sessionProvider.GetRequiredService<ChatSystemLocalDbContext>()
-            .Database.EnsureCreatedAsync(cancellationToken);
+            await sessionProvider.GetRequiredService<ChatSystemLocalDbContext>()
+                .Database.EnsureCreatedAsync(cancellationToken);
 
-        var keyManager = sessionProvider.GetRequiredService<IClientKeyManager>();
+            var keyManager = sessionProvider.GetRequiredService<IClientKeyManager>();
 
-        var keyPair = await keyManager.GenerateAndProtectKeyPairAsync(password, cancellationToken);
+            var keyPair = await keyManager.GenerateAndProtectKeyPairAsync(password, cancellationToken);
 
-        var response = await _authApi.RegisterAsync(new RegisterRequest(login, password, keyPair.PublicKey), cancellationToken);
+            var response = await _authApi.RegisterAsync(new RegisterRequest(login, password, keyPair.PublicKey),
+                cancellationToken);
 
-        var identityRepository = sessionProvider.GetRequiredService<ILocalIdentityRepository>();
+            var identityRepository = sessionProvider.GetRequiredService<ILocalIdentityRepository>();
 
-        var userRepository = sessionProvider.GetRequiredService<ILocalUserRepository>();
+            var userRepository = sessionProvider.GetRequiredService<ILocalUserRepository>();
 
-        var userId = IdFactory.Parse<UserId>(response.Id);
+            var userId = IdFactory.Parse<UserId>(response.Id);
 
-        _sessionContext.SetSession(userId, response.SessionToken);
+            await identityRepository.StoreAsync(new CachedIdentity {
+                Id = userId,
+                SessionToken = response.SessionToken,
+                Login = response.Login,
+                Tag = response.Tag
+            }, cancellationToken);
 
-        await identityRepository.StoreAsync(new CachedIdentity {
-            Id = userId,
-            SessionToken = response.SessionToken,
-            Login = response.Login,
-            Tag = response.Tag
-        }, cancellationToken);
+            var newUser = new CachedUser {
+                CreatedAt = DateTimeOffset.UtcNow,
+                Id = userId,
+                Login = response.Login,
+                PublicKey = keyPair.PublicKey,
+                Role = RegularUserRole.GetTypeString(),
+                Tag = response.Tag
+            };
 
-        var newUser = new CachedUser {
-            CreatedAt = DateTimeOffset.UtcNow,
-            Id = userId,
-            Login = response.Login,
-            PublicKey = keyPair.PublicKey,
-            Role = RegularUserRole.GetTypeString(),
-            Tag = response.Tag
-        };
+            await userRepository.UpsertAsync(newUser, cancellationToken);
 
-        await userRepository.UpsertAsync(newUser, cancellationToken);
+            _sessionScopeService.EndSession();
 
-        return newUser;
+            return newUser;
+
+        } catch (Exception ex) {
+            Console.WriteLine($"[REGISTER FAIL]: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+
+            throw;
+        }
     }
 
     public async Task<CachedUser> LoginAsync(string login, string password, CancellationToken cancellationToken = default) {
