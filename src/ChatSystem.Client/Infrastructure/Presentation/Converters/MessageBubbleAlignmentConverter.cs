@@ -1,20 +1,27 @@
 ﻿using Avalonia.Data.Converters;
 using Avalonia.Layout;
-using System;
-using System.Globalization;
 using ChatSystem.Client.Core.Domain.User;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 
-namespace ChatSystem.Client.Infrastructure.Presentation.Converters {
-    public class MessageBubbleAlignmentConverter : IValueConverter {
-        public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture) {
-            if (value is UserId senderId && parameter is UserId currentUserId) {
-                return senderId == currentUserId ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-            }
+namespace ChatSystem.Client.Infrastructure.Presentation.Converters;
 
-            return HorizontalAlignment.Left;
+/// <summary>
+/// A multivalue converter that determines the horizontal alignment of a chat message bubble.
+/// 
+/// Aligns messages sent by the current user to the right, and messages from other participants to the left.
+/// </summary>
+public class MessageBubbleAlignmentConverter : IMultiValueConverter {
+
+    /// <inheritdoc />
+    public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture) {
+        if (values is [UserId senderId, UserId currentUserId]) {
+            return senderId.Equals(currentUserId)
+                ? HorizontalAlignment.Right
+                : HorizontalAlignment.Left;
         }
-        public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) {
-            throw new NotSupportedException();
-        }
+
+        return HorizontalAlignment.Left;
     }
 }
