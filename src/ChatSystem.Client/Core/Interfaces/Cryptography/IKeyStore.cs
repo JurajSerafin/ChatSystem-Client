@@ -29,5 +29,9 @@ internal interface IKeyStore {
     /// </summary>
     public Task ClearAsync(CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Gets the constant primary key identifier used to enforce a single-row constraint 
+    /// for the user's encrypted key material in local storage.
+    /// </summary>
     public int KeyId { get; }
 }
