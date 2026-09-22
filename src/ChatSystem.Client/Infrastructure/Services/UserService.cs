@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using ChatSystem.Client.Core.Domain.User;
+﻿using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Interfaces.Networking.User;
 using ChatSystem.Client.Core.Interfaces.Repositories;
 using ChatSystem.Client.Core.Interfaces.Services;
 using ChatSystem.Client.Infrastructure.Networking.ResponseMappers.User;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ChatSystem.Client.Infrastructure.Services;
 
@@ -69,7 +70,6 @@ internal sealed class UserService : IUserService {
             return user.PublicKey;
         }
 
-        var response = await _userApi.GetPublicKeyAsync(userId, cancellationToken);
-        return response.PublicKey;
+        throw new InvalidOperationException($"Cannot retrieve public key: User '{userId}' not found on server.");
     }
 }
