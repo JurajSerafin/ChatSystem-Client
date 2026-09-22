@@ -21,6 +21,8 @@ internal class ClientKeyManager : IClientKeyManager {
 
     private byte[]? _decryptedPrivateKeyBytes;
 
+    private string? _cachedPublicKey;
+
     public ClientKeyManager(
         IClientEncryptionService cryptoService,
         IKeyDerivationService keyDerivationService,
@@ -85,6 +87,8 @@ internal class ClientKeyManager : IClientKeyManager {
             CryptographicOperations.ZeroMemory(_decryptedPrivateKeyBytes);
             _decryptedPrivateKeyBytes = null;
         }
+
+        _cachedPublicKey = null;
     }
 
     public string GetPrivateKey() {
@@ -93,6 +97,12 @@ internal class ClientKeyManager : IClientKeyManager {
         }
 
         return Encoding.UTF8.GetString(_decryptedPrivateKeyBytes);
+    }
+
+    public string GetPublicKey() {
+        _cachedPublicKey ??= _cryptoService.DerivePublicKey(GetPrivateKey());
+
+        return _cachedPublicKey;
     }
 
     public async Task DeleteProtectedKeysAsync(CancellationToken cancellationToken = default) {

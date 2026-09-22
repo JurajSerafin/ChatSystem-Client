@@ -32,6 +32,11 @@ internal interface IClientKeyManager {
     public string GetPrivateKey();
 
     /// <summary>
+    /// Retrieves the loaded public key.
+    /// </summary>
+    public string GetPublicKey();
+
+    /// <summary>
     /// Wipes the locally stored encrypted key material from disk.
     /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
     /// </summary>
