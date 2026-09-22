@@ -5,6 +5,9 @@ using System;
 
 namespace ChatSystem.Client.Infrastructure.Presentation;
 
+/// <summary>
+/// Navigates between top-level ViewModels displayed in the main window.
+/// </summary>
 internal class NavigationService : INavigationService {
     private readonly IServiceProvider _rootProvider;
 
@@ -15,6 +18,7 @@ internal class NavigationService : INavigationService {
         _sessionScope = sessionScope;
     }
 
+    /// <inheritdoc />
     public TViewModel NavigateTo<TViewModel>() where TViewModel : ViewModelBase {
         var provider = _sessionScope.CurrScope ?? _rootProvider;
 
