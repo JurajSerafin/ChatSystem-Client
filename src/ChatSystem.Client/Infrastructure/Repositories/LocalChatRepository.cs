@@ -35,25 +35,37 @@ internal class LocalChatRepository : ILocalChatRepository{
         return await _dbContext.Chats.FindAsync([id], cancellationToken);
     }
     public async Task UpsertAsync(CachedChat chat, CancellationToken cancellationToken = default) {
-        var existing = await _dbContext.Chats.FindAsync([chat.Id], cancellationToken);
+        try {
+            var existing = await _dbContext.Chats.FindAsync([chat.Id], cancellationToken);
 
-        if (existing is null) {
-            await _dbContext.Chats.AddAsync(chat, cancellationToken);
-        } else {
-            _dbContext.Entry(existing).CurrentValues.SetValues(chat);
+            if (existing is null) {
+                await _dbContext.Chats.AddAsync(chat, cancellationToken);
+            } else {
+                _dbContext.Entry(existing).CurrentValues.SetValues(chat);
+            }
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
         }
-
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        catch (DbUpdateException) {
+            _dbContext.ChangeTracker.Clear();
+            throw;
+        }
     }
 
     public async Task AddParticipantAsync(UserId userId, ChatId chatId, string role, CancellationToken cancellationToken = default) {
-        await _dbContext.ChatParticipants.AddAsync(new CachedChatParticipant() {
-            ChatId = chatId,
-            UserId = userId,
-            Role = role
-        }, cancellationToken);
+        try {
+            await _dbContext.ChatParticipants.AddAsync(new CachedChatParticipant {
+                ChatId = chatId,
+                UserId = userId,
+                Role = role
+            }, cancellationToken);
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException) {
+            _dbContext.ChangeTracker.Clear();
+            throw;
+        }
     }
 
     public async Task DeleteAsync(ChatId chatId, CancellationToken cancellationToken = default) {

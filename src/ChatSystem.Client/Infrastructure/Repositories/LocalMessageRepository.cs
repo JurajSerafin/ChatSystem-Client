@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading;
 using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.Chat;
@@ -61,14 +62,23 @@ internal class LocalMessageRepository : ILocalMessageRepository {
     }
 
     public async Task SaveForChatAsync(CachedMessage message, CancellationToken cancellationToken = default) {
-        var existing = await _dbContext.Messages.FindAsync([message.Id], cancellationToken);
 
-        if (existing is null) {
-            await _dbContext.Messages.AddAsync(message, cancellationToken);
-        } else {
-            _dbContext.Entry(existing).CurrentValues.SetValues(message);
+        try {
+            var existing = await _dbContext.Messages.FindAsync([message.Id], cancellationToken);
+
+            if (existing is null) {
+                await _dbContext.Messages.AddAsync(message, cancellationToken);
+            }
+            else {
+                _dbContext.Entry(existing).CurrentValues.SetValues(message);
+            }
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException) {
+            _dbContext.ChangeTracker.Clear();
+            throw;
         }
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }
