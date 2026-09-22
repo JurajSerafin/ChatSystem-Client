@@ -13,6 +13,8 @@ namespace ChatSystem.Client.Core.Domain.User;
 [JsonConverter(typeof(UserIdJsonConverter))]
 public readonly record struct UserId(Guid Value) : IId<UserId> {
     public static UserId Create(Guid guid) => new(guid);
+
+    public override string ToString() => Value.ToString();
 }
 
 /// <summary>
