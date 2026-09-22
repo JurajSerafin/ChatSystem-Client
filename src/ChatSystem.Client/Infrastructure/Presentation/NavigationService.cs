@@ -6,30 +6,23 @@ using System;
 namespace ChatSystem.Client.Infrastructure.Presentation;
 
 internal class NavigationService : INavigationService {
-    private readonly IServiceProvider _services;
-    private readonly MainWindowViewModel _mainWindow;
+    private readonly IServiceProvider _rootProvider;
 
-    public NavigationService(IServiceProvider services, MainWindowViewModel mainWindow) {
-        _services = services;
-        _mainWindow = mainWindow;
+    private readonly ISessionScopeService _sessionScope;
+
+    public NavigationService(IServiceProvider rootProvider, ISessionScopeService sessionScope) {
+        _rootProvider = rootProvider;
+        _sessionScope = sessionScope;
     }
 
-    public void NavigateTo<TViewModel>(Action<TViewModel>? initAction = null) where TViewModel : ViewModelBase {
-        CleanupOutgoingViewModelSubscribingMemory();
+    public TViewModel NavigateTo<TViewModel>() where TViewModel : ViewModelBase {
+        var provider = _sessionScope.CurrScope ?? _rootProvider;
 
-        ResolveAndAssignNewViewModel<TViewModel>(initAction);
+        var viewModel = provider.GetRequiredService<TViewModel>();
+
+        var mainWindow = _rootProvider.GetRequiredService<MainWindowViewModel>();
+        mainWindow.CurrentViewModel = viewModel;
+
+        return viewModel;
     }
-
-    private void CleanupOutgoingViewModelSubscribingMemory() {
-        _mainWindow.CurrentViewModel.Dispose();
-    }
-
-    private void ResolveAndAssignNewViewModel<TViewModel>(Action<TViewModel>? initAction = null) where TViewModel : ViewModelBase {
-        var viewModel = _services.GetRequiredService<TViewModel>();
-
-        initAction?.Invoke(viewModel);
-
-        _mainWindow.CurrentViewModel = viewModel;
-    }
-
 }
