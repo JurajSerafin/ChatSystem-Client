@@ -92,35 +92,41 @@ internal sealed class MessageService : IMessageService {
     public async Task<IReadOnlyList<CachedMessage>> GetHistoryAsync(
         ChatId chatId,
         CancellationToken cancellationToken = default) {
+
         EnsureAuthenticated();
 
-        var cached = await _messageRepo.FindByChatIdAsync(
-            chatId, HistoryPageLimit,
-            0,
+        var cachedMessages = await _messageRepo.FindByChatIdAsync(
+            chatId,
+            HistoryPageLimit,
+            offset: 0,
             cancellationToken
         );
 
-        if (cached.Count > 0) {
-            return cached;
-        }
-
-        var response = await _messageApi.GetHistoryAsync(
-            chatId,
-            HistoryPageLimit,
-            0,
-            cancellationToken
+        try {
+            var response = await _messageApi.GetHistoryAsync(
+                chatId,
+                HistoryPageLimit,
+                offset: 0,
+                cancellationToken
             );
 
-        var messages = new List<CachedMessage>();
-        foreach (var dto in response) {
-            var decrypted = await DecryptAndPersistAsync(dto, cancellationToken);
-
-            if (decrypted is not null) {
-                messages.Add(decrypted);
+            foreach (var dto in response) {
+                await DecryptAndPersistAsync(dto, cancellationToken);
             }
+
+            cachedMessages = await _messageRepo.FindByChatIdAsync(
+                chatId,
+                HistoryPageLimit, 
+                offset: 0,
+                cancellationToken
+            );
+
+        } catch (Exception ex) { 
+            Console.WriteLine($"[MESSAGE HISTORY FETCH FAIL]: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
         }
 
-        return messages;
+        return cachedMessages;
     }
 
     public async Task MarkAsReadAsync(
@@ -170,10 +176,14 @@ internal sealed class MessageService : IMessageService {
         CancellationToken cancellationToken
     ) {
         try {
+            await _chatService.GetChatByIdAsync(dto.ChatId, cancellationToken);
+
             var keyResponse = await _messageApi.GetEncryptedKeyAsync(dto.Id, cancellationToken);
 
             var wrappedKey = Convert.FromBase64String(keyResponse.EncryptedKey);
-            var sessionKey = _crypto.UnwrapKey(wrappedKey, _keyManager.GetPrivateKey());
+            var privateKey = _keyManager.GetPrivateKey();
+
+            var sessionKey = _crypto.UnwrapKey(wrappedKey, privateKey);
 
             var ciphertext = Convert.FromBase64String(dto.Ciphertext);
             var plaintext = _crypto.DecryptSymmetric(ciphertext, sessionKey);
@@ -193,10 +203,11 @@ internal sealed class MessageService : IMessageService {
             await _messageRepo.SaveForChatAsync(cached, cancellationToken);
 
             return cached;
-        } catch (Refit.ApiException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound) {
-            return null;
-        } catch (Exception) {
-            return null;
+        } catch (Exception ex) {
+            Console.WriteLine($"[MESSAGE DECRYPT FAIL]: {ex.Message}");
+            Console.WriteLine(ex.StackTrace);
+
+            throw;
         }
     }
 
