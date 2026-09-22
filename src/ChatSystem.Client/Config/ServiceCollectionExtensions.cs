@@ -1,4 +1,3 @@
-using ChatSystem.Client.Core.Domain.Chat;
 using ChatSystem.Client.Core.Interfaces.Cryptography;
 using ChatSystem.Client.Core.Interfaces.Database;
 using ChatSystem.Client.Core.Interfaces.Networking.Auth;
@@ -12,6 +11,7 @@ using ChatSystem.Client.Core.Interfaces.Session;
 using ChatSystem.Client.Infrastructure.Cryptography;
 using ChatSystem.Client.Infrastructure.Database;
 using ChatSystem.Client.Infrastructure.Networking;
+using ChatSystem.Client.Infrastructure.Networking.Json;
 using ChatSystem.Client.Infrastructure.Presentation;
 using ChatSystem.Client.Infrastructure.Repositories;
 using ChatSystem.Client.Infrastructure.Services;
@@ -21,12 +21,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
-using System.IO;
+using System.Text.Json;
 
 namespace ChatSystem.Client.Config;
 
 public static class ServiceCollectionExtensions {
     public static IServiceCollection AddChatSystemServices(this IServiceCollection services) {
+
+        services.AddSingleton<ISessionScopeService, SessionScopeService>();
+        
         AddDbContext(services);
 
         services.AddCryptographyServices();
@@ -56,23 +59,20 @@ public static class ServiceCollectionExtensions {
 
     private static void AddChatSystemPresentationServices(this IServiceCollection services) {
         services.AddSingleton<INavigationService, NavigationService>();
-
+        services.AddSingleton<ISessionScopeService, SessionScopeService>();
         services.AddSingleton<MainWindowViewModel>();
-        services.AddSingleton<ChatShellViewModel>();
-        services.AddSingleton<ChatListViewModel>();
+
+        services.AddScoped<ChatShellViewModel>();
+        services.AddScoped<ChatListViewModel>();
 
         services.AddTransient<LoginViewModel>();
         services.AddTransient<RegistrationViewModel>();
-        services.AddSingleton<UserSearchViewModel>();
-        services.AddSingleton<ChatViewModel>();
 
-        services.AddSingleton<Func<UserSearchViewModel>>(sp =>
-             sp.GetRequiredService<UserSearchViewModel>
-        );
-
-        services.AddSingleton<Func<CachedChat, ChatViewModel>>(sp =>
-            chat => ActivatorUtilities.CreateInstance<ChatViewModel>(sp, chat)
-        );
+        // UserSearchViewModel and ChatViewModel are intentionally not registered;
+        // ChatViewModel needs a runtime CachedChat parameter and
+        // UserSearchViewModel must be freshly created every time search opens.
+        // Both are built via ActivatorUtilities.CreateInstance against the current
+        // session scope, from ChatShellViewModel.CurrentProvider.
     }
 
     private static void AddDbContext(IServiceCollection services) {
@@ -103,20 +103,25 @@ public static class ServiceCollectionExtensions {
 
         services.AddTransient<AuthTokenHandler>();
 
+        var jsonOptions = new JsonSerializerOptions();
+        jsonOptions.Converters.Add(new UnixSecondsDateTimeOffsetConverter());
+
+        var refitSettings = new RefitSettings(new SystemTextJsonContentSerializer(jsonOptions));
+
         // no auth handler needed requests don't have tokens yet
-        services.AddRefitClient<IAuthApi>()
+        services.AddRefitClient<IAuthApi>(refitSettings)
             .ConfigureHttpClient(client => ConfigureHttpClient(client, serverOptions));
 
         // Attach the token on every request for the created APIs
-        services.AddRefitClient<IUserApi>()
+        services.AddRefitClient<IUserApi>(refitSettings)
             .ConfigureHttpClient(client => ConfigureHttpClient(client, serverOptions))
             .AddHttpMessageHandler<AuthTokenHandler>();
 
-        services.AddRefitClient<IChatApi>()
+        services.AddRefitClient<IChatApi>(refitSettings)
             .ConfigureHttpClient(client => ConfigureHttpClient(client, serverOptions))
             .AddHttpMessageHandler<AuthTokenHandler>();
 
-        services.AddRefitClient<IMessageApi>()
+        services.AddRefitClient<IMessageApi>(refitSettings)
             .ConfigureHttpClient(client => ConfigureHttpClient(client, serverOptions))
             .AddHttpMessageHandler<AuthTokenHandler>();
 
