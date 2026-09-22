@@ -58,7 +58,9 @@ internal sealed class ChatService : IChatService {
         try {
             var response = await _chatApi.GetChatByIdAsync(id, cancellationToken);
             var chat = ChatMapper.ToCachedChat(response);
+
             await _chatRepo.UpsertAsync(chat, cancellationToken);
+
             return chat;
         } catch (Refit.ApiException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound) {
             return null;
