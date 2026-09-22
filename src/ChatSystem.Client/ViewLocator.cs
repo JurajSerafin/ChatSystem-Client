@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using ChatSystem.Client.ViewModels;
+using ChatSystem.Client.Presentation.ViewModels;
 
 namespace ChatSystem.Client;
 
