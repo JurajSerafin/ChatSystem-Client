@@ -67,11 +67,7 @@ dotnet test
 
 ![sign_in](./docs/img/ChatSystem_sign_in.png)
 
-### 4. Search for other users with their login
-
-![search](./docs/img/ChatSystem_finding_other_users.png)
-
-### 4. Search for other users with their login
+### 4. Search for other users
 
 ![search](./docs/img/ChatSystem_finding_other_users.png)
 
