@@ -12,37 +12,22 @@ namespace ChatSystem.Client.Presentation.ViewModels;
 /// </summary>
 internal partial class LoginViewModel : ViewModelBase {
     private readonly IAuthService _authService;
-    private readonly INavigationService _navigation;
 
-    /// <summary>
-    /// Gets or sets the username or identifier entered by the user.
-    /// </summary>
+    private readonly INavigationService _navigationService;
+
     [ObservableProperty]
     private string _login = string.Empty;
 
-    /// <summary>
-    /// Gets or sets the raw password string entered by the user.
-    /// </summary>
     [ObservableProperty]
     private string _password = string.Empty;
 
-    /// <summary>
-    /// Gets or sets a value indicating whether an authentication request is currently in progress.
-    /// Used to disable UI controls and display loading indicators.
-    /// </summary>
     [ObservableProperty]
     private bool _isBusy;
 
-    /// <summary>
-    /// Gets or sets the error message displayed to the user if authentication fails.
-    /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(HasError))]
     private string? _errorMessage;
 
-    /// <summary>
-    /// Gets a value indicating whether an error message is currently set.
-    /// </summary>
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
 
@@ -53,31 +38,25 @@ internal partial class LoginViewModel : ViewModelBase {
     public bool HasSuccess => !string.IsNullOrEmpty(SuccessMessage);
 
 
-    /// <summary>
-    /// Occurs when the authentication request completes successfully.
-    /// </summary>
-    public event EventHandler? LoginSucceeded;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LoginViewModel"/> class.
-    /// </summary>
-    /// <param name="authService">The service handling authentication API calls.</param>
-    /// <param name="navigation">The service handling view navigation.</param>
-    public LoginViewModel(IAuthService authService, INavigationService navigation) {
-        _authService = authService;
-        _navigation = navigation;
+    [RelayCommand]
+    private void RequestRegistrationNavigation() {
+        _navigationService.NavigateTo<RegistrationViewModel>();
     }
 
-    /// <summary>
-    /// Attempts to authenticate the user asynchronously against the backend server.
-    /// Handles specific REST API and HTTP network exceptions.
-    /// </summary>
+    public LoginViewModel(IAuthService authService, INavigationService navigationService) {
+        _authService = authService;
+        _navigationService = navigationService;
+    }
+
     [RelayCommand(CanExecute = nameof(CanSubmit))]
     private async Task SubmitAsync() {
         IsBusy = true;
+
         ErrorMessage = null;
+
         SuccessMessage = null;
-        bool loginSuccess = false;
+
+        var loginSuccess = false;
 
         try {
             await _authService.LoginAsync(Login, Password);
@@ -95,39 +74,10 @@ internal partial class LoginViewModel : ViewModelBase {
         }
 
         if (loginSuccess) {
-            try {
-                TriggerLoginSuccessForRootSubscribers();
-                NavigateToNextScreen();
-            } catch (Exception ex) {
-                ErrorMessage = $"Navigation has failed to load: {ex.Message}.";
-            }
+            _navigationService.NavigateTo<ChatShellViewModel>();
         }
     }
 
-    /// <summary>
-    /// Invokes the <see cref="LoginSucceeded"/> event for external observers.
-    /// </summary>
-    private void TriggerLoginSuccessForRootSubscribers() {
-        LoginSucceeded?.Invoke(this, EventArgs.Empty);
-    }
-
-    /// <summary>
-    /// Transitions the application to the initial post-login screen.
-    /// </summary>
-    [RelayCommand]
-    private void NavigateToNextScreen() {
-        _navigation.NavigateTo<ChatListViewModel>();
-    }
-
-    [RelayCommand]
-    private void NavigateToRegistrationScreen() {
-        _navigation.NavigateTo<RegistrationViewModel>();
-    }
-
-    /// <summary>
-    /// Determines whether the submit command can execute based on current input validation and busy state.
-    /// </summary>
-    /// <returns><c>true</c> if form inputs are valid and the service is not busy; otherwise, <c>false</c>.</returns>
     private bool CanSubmit() {
         return !IsBusy
            && !string.IsNullOrWhiteSpace(Login)
@@ -135,26 +85,14 @@ internal partial class LoginViewModel : ViewModelBase {
     }
 
     partial void OnLoginChanged(string value) {
-        SuccessMessage = null;
-
-        ErrorMessage = null;
-
         SubmitCommand.NotifyCanExecuteChanged();
     }
 
     partial void OnPasswordChanged(string value) {
-        SuccessMessage = null;
-
-        ErrorMessage = null;
-
         SubmitCommand.NotifyCanExecuteChanged();
     }
 
     partial void OnIsBusyChanged(bool value) {
-        SuccessMessage = null;
-
-        ErrorMessage = null;
-
         SubmitCommand.NotifyCanExecuteChanged();
     }
 }
