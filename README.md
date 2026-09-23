@@ -86,3 +86,7 @@ Type your message and send. The whole conversation stream is visible in the dedi
 ### 7. Logout
 
 ![searched_added](./docs/img/ChatSystem_logout.png)
+
+### Documentation
+
+All documentation is located in `docs/` directory, in order to generate further Doxygen documentation run `doxygen Doxyfile`, which puts it output to `docs/doxygen`.
