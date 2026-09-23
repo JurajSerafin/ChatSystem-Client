@@ -1,108 +1,129 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Avalonia.Threading;
 using ChatSystem.Client.Core.Domain.Chat;
 using ChatSystem.Client.Core.Domain.Message;
+using ChatSystem.Client.Core.Domain.User;
 using ChatSystem.Client.Core.Interfaces.Services;
 using ChatSystem.Client.Core.Interfaces.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace ChatSystem.Client.Presentation.ViewModels {
-    internal partial class ChatViewModel : ViewModelBase {
-        private readonly IMessageService _messageService;
-        private readonly ISessionContext _sessionContext;
+namespace ChatSystem.Client.Presentation.ViewModels;
 
-        public CachedChat CurrentChat { get; }
+/// <summary>
+/// ViewModel representing an active chat conversation panel.
+/// 
+/// Handles loading message history, sending encrypted messages, 
+/// managing UI loading states, and broadcasting close requests.
+/// </summary>
+internal partial class ChatViewModel : ViewModelBase {
+    private readonly IMessageService _messageService;
 
-        public ChatViewModel(IMessageService messageService, ISessionContext sessionContext, CachedChat currentChat) {
-            _messageService = messageService;
-            _sessionContext = sessionContext;
-            CurrentChat = currentChat;
+    private readonly ISessionContext _sessionContext;
 
-            _ = LoadHistoryAsync();
-        }
+    public CachedChat CurrentChat { get; }
 
-        public Guid CurrentUserId => _sessionContext.CurrentUserId?.Value ?? Guid.Empty;
+    public ChatViewModel(IMessageService messageService, ISessionContext sessionContext, CachedChat currentChat) {
+        _messageService = messageService;
+        _sessionContext = sessionContext;
+        CurrentChat = currentChat;
 
-        public ObservableCollection<CachedMessage> Messages { get; } = new();
+        _ = LoadHistoryAsync();
+    }
 
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(SendMessageCommand))]
-        private string _messageText = string.Empty;
+    public UserId CurrentUserId => _sessionContext.CurrentUserId ?? default;
 
-        [ObservableProperty]
-        [NotifyCanExecuteChangedFor(nameof(SendMessageCommand))]
-        private bool _isBusy;
+    public ObservableCollection<CachedMessage> Messages { get; } = new();
 
-        [ObservableProperty]
-        private string? _errorMessage;
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SendMessageCommand))]
+    private string _messageText = string.Empty;
 
-        public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SendMessageCommand))]
+    private bool _isBusy;
 
-        // ChatShell listens to this for the middle screen swaping
-        public event EventHandler? CloseRequested;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasError))]
+    private string? _errorMessage;
 
-        public async Task LoadHistoryAsync() {
-            IsBusy = true;
-            ErrorMessage = null;
-            Messages.Clear();
+    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-            try {
-                var history = await _messageService.GetHistoryAsync(CurrentChat.Id);
+    public event EventHandler? CloseRequested;
 
-                foreach (var message in history) {
+    public async Task LoadHistoryAsync() {
+        IsBusy = true;
+        ErrorMessage = null;
+
+        EnqueActionToUIThread(() => Messages.Clear());
+
+        try {
+            var history = await _messageService.GetHistoryAsync(CurrentChat.Id);
+
+            var chronoSortedHistory = history.OrderBy(message => message.CreatedAt);
+
+            EnqueActionToUIThread(() => {
+                foreach (var message in chronoSortedHistory) {
                     Messages.Add(message);
                 }
-            } catch (Exception ex) {
-                ErrorMessage = $"Failed to load messages: {ex.Message}";
-            } finally {
-                IsBusy = false;
-            }
+            });
+
+        } catch (Exception ex) {
+            ErrorMessage = $"Failed to load messages: {ex.Message}";
+
+            Console.WriteLine(ErrorMessage);
+        } finally {
+            IsBusy = false;
         }
+    }
 
-        [RelayCommand(CanExecute = nameof(CanSendMessage))]
-        private async Task SendMessageAsync() {
-            var textToSend = MessageText.Trim();
-            MessageText = string.Empty;
-            ErrorMessage = null;
+    [RelayCommand(CanExecute = nameof(CanSendMessage))]
+    private async Task SendMessageAsync() {
+        var textToSend = MessageText.Trim();
 
-            try {
-                var sentMessage = await _messageService.SendMessageAsync(CurrentChat.Id, textToSend);
+        MessageText = string.Empty;
 
-                Messages.Add(sentMessage);
-            } catch (Exception ex) {
-                ErrorMessage = $"Failed to send message: {ex.Message}";
+        ErrorMessage = null;
 
-                MessageText = textToSend;
-            }
+        try {
+            var sentMessage = await _messageService.SendMessageAsync(CurrentChat.Id, textToSend);
+
+            EnqueActionToUIThread(() => Messages.Add(sentMessage));
+
+        } catch (Exception ex) {
+            ErrorMessage = $"Failed to send message: {ex.Message}";
+
+            MessageText = textToSend;
         }
+    }
 
+    private void EnqueActionToUIThread(Action action) {
+        Dispatcher.UIThread.Post(action);
+    }
 
-        [RelayCommand]
-        private void Close() {
-            CloseRequested?.Invoke(this, EventArgs.Empty);
-        }
+    [RelayCommand]
+    private void Close() {
+        CloseRequested?.Invoke(this, EventArgs.Empty);
+    }
 
-        private bool CanSendMessage() {
-            return !IsBusy && !string.IsNullOrWhiteSpace(MessageText);
-        }
+    private bool CanSendMessage() {
+        return !IsBusy && !string.IsNullOrWhiteSpace(MessageText);
+    }
 
-        partial void OnMessageTextChanged(string value) {
-            SendMessageCommand.NotifyCanExecuteChanged();
-        }
+    partial void OnMessageTextChanged(string value) {
+        SendMessageCommand.NotifyCanExecuteChanged();
+    }
 
-        partial void OnIsBusyChanged(bool value) {
-            SendMessageCommand.NotifyCanExecuteChanged();
-        }
+    partial void OnIsBusyChanged(bool value) {
+        SendMessageCommand.NotifyCanExecuteChanged();
+    }
 
-        public override void Dispose() {
-            base.Dispose();
+    public override void Dispose() {
+        base.Dispose();
 
-            Messages.Clear();
-        }
+        Messages.Clear();
     }
 }
