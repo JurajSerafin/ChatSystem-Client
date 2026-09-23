@@ -9,8 +9,16 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace ChatSystem.Client.Presentation.ViewModels;
 
+/// <summary>
+/// ViewModel managing user search and new conversation initiation in the <see cref="ChatShellViewModel"/>'s detail pane.
+/// 
+/// Enables searching other user profiles, displaying matching search results,
+/// creating new direct message chats. Also takes care of notifying the parent shell
+/// about search cancellation or a new chat creation.
+/// </summary>
 internal partial class UserSearchViewModel : ViewModelBase {
     private readonly IUserService _userService;
+
     private readonly IChatService _chatService;
 
     [ObservableProperty]
@@ -33,13 +41,13 @@ internal partial class UserSearchViewModel : ViewModelBase {
     public ObservableCollection<CachedUser> SearchResults { get; } = new();
 
     public event EventHandler? SearchCancelled;
+
     public event EventHandler<ChatId>? ChatStarted;
 
     public UserSearchViewModel(IUserService userService, IChatService chatService) {
         _userService = userService;
         _chatService = chatService;
     }
-
 
     private bool CanSearch() {
         return !IsBusy && !string.IsNullOrWhiteSpace(SearchQuery);
@@ -48,7 +56,9 @@ internal partial class UserSearchViewModel : ViewModelBase {
     [RelayCommand(CanExecute = nameof(CanSearch))]
     private async Task SearchAsync() {
         IsBusy = true;
+
         ErrorMessage = null;
+
         SearchResults.Clear();
 
         try {
@@ -61,6 +71,7 @@ internal partial class UserSearchViewModel : ViewModelBase {
             if (SearchResults.Count == 0) {
                 ErrorMessage = "No users found matching that name.";
             }
+
         } catch (Exception ex) {
             ErrorMessage = $"Search failed: {ex.Message}";
         } finally {
@@ -68,6 +79,10 @@ internal partial class UserSearchViewModel : ViewModelBase {
         }
     }
 
+    /// <summary>
+    /// Creates a new chat session with the target user and raises <see cref="ChatStarted"/>.
+    /// </summary>
+    /// <param name="targetUser">The user profile to initiate a conversation with.</param>
     [RelayCommand]
     private async Task StartChatAsync(CachedUser targetUser) {
         if (IsBusy) {
@@ -81,17 +96,24 @@ internal partial class UserSearchViewModel : ViewModelBase {
             var newChat = await _chatService.CreateChatAsync([targetUser.Id]);
 
             ChatStarted?.Invoke(this, newChat.Id);
+
         } catch (Exception ex) {
             ErrorMessage = $"Could not start chat: {ex.Message}";
+        } finally {
             IsBusy = false;
         }
     }
 
+    /// <summary>
+    /// Handles selection changes on <see cref="SelectedUser"/>, initiating chat creation in a background task
+    /// and resetting the selection state back to null.
+    /// </summary>
+    /// <param name="value">The newly selected user profile.</param>
     partial void OnSelectedUserChanged(CachedUser? value) {
         if (value is not null) {
             _ = StartChatAsync(value);
 
-            _selectedUser = null;
+            SelectedUser = null;
         }
     }
 
