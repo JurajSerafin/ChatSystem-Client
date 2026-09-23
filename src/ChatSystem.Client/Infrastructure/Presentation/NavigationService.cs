@@ -1,4 +1,5 @@
 ﻿using ChatSystem.Client.Core.Interfaces.Presentation;
+using ChatSystem.Client.Core.Interfaces.Session;
 using ChatSystem.Client.Presentation.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;

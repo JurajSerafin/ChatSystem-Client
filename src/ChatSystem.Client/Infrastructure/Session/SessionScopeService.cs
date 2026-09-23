@@ -1,8 +1,8 @@
 ﻿using System;
-using ChatSystem.Client.Core.Interfaces.Presentation;
+using ChatSystem.Client.Core.Interfaces.Session;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ChatSystem.Client.Infrastructure.Presentation;
+namespace ChatSystem.Client.Infrastructure.Session;
 
 /// <summary>
 /// Manages a scoped dependency injection lifetime bound to the user's active login session.

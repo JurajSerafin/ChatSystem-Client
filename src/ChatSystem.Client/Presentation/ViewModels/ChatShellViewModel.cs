@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.Chat;
 using ChatSystem.Client.Core.Interfaces.Presentation;
 using ChatSystem.Client.Core.Interfaces.Services;
+using ChatSystem.Client.Core.Interfaces.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;

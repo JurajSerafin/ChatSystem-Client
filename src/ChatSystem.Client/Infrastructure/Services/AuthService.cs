@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using ChatSystem.Client.Core.Interfaces.Presentation;
 
 namespace ChatSystem.Client.Infrastructure.Services;
 
