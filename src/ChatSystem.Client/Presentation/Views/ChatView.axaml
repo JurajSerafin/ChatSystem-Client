@@ -62,12 +62,14 @@
 
                         <Border Padding="12,8" 
                                 CornerRadius="12" 
-                                MaxWidth="400"
-                                HorizontalAlignment="{
-                                    Binding SenderId,
-                                    Converter={StaticResource MessageBubbleAlignmentConverter},
-                                    ConverterParameter={Binding $parent[UserControl].((vm:ChatViewModel)DataContext).CurrentUserId}
-                                }">
+                                MaxWidth="400">
+
+                            <Border.HorizontalAlignment>
+                                <MultiBinding Converter="{StaticResource MessageBubbleAlignmentConverter}">
+                                    <Binding Path="SenderId" />
+                                    <Binding Path="$parent[UserControl].((vm:ChatViewModel)DataContext).CurrentUserId" />
+                                </MultiBinding>
+                            </Border.HorizontalAlignment>
                             
                             <Border.Background>
                                 <SolidColorBrush Color="#22808080"/>
@@ -90,23 +92,31 @@
         </ListBox>
 
         <Border Grid.Row="2" Padding="16" Background="#0D000000">
-            <Grid ColumnDefinitions="*, Auto" >
-                <TextBox Grid.Column="0" 
-                         Text="{Binding MessageText}" 
-                         PlaceholderText="..." 
-                         IsEnabled="{Binding !IsBusy}"
-                         Margin="0,0,12,0"
-                         MaxLines="4"
-                         AcceptsReturn="False"/>
+            <StackPanel Spacing="8">
+                
+                <TextBlock Text="{Binding ErrorMessage}" 
+                           Foreground="Red" 
+                           IsVisible="{Binding HasError}" 
+                           FontWeight="SemiBold"/>
 
-                <Button Grid.Column="1" 
-                        Content="Send ➔" 
-                        Command="{Binding SendMessageCommand}"
-                        IsEnabled="{Binding !IsBusy}"
-                        VerticalAlignment="Bottom"
-                        Padding="16,10"/>
-            </Grid>
+                <Grid ColumnDefinitions="*, Auto" >
+                    <TextBox Grid.Column="0" 
+                             Text="{Binding MessageText}" 
+                             PlaceholderText="..." 
+                             IsEnabled="{Binding !IsBusy}"
+                             Margin="0,0,12,0"
+                             MaxLines="4"
+                             AcceptsReturn="False"/>
 
+                    <Button Grid.Column="1" 
+                            Content="Send ➔" 
+                            Command="{Binding SendMessageCommand}"
+                            IsEnabled="{Binding !IsBusy}"
+                            VerticalAlignment="Bottom"
+                            Padding="16,10"/>
+                </Grid>
+                
+            </StackPanel>
         </Border>
 
     </Grid>

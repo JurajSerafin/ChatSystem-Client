@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 
 namespace ChatSystem.Client.Presentation.Views {
-    internal partial class EmptyView : UserControl {
+    public partial class EmptyView : UserControl {
     }
 }

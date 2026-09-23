@@ -7,18 +7,17 @@
              x:CompileBindings="True">
 
     <ListBox ItemsSource="{Binding Chats}"
-             SelectedItem="Binding SelectedChat"
+             SelectedItem="{Binding SelectedChat}"
              Background="Transparent"
              BorderThickness="0">
 
              <ListBox.ItemTemplate>
-                 <DataTemplate x:DataType="chat:CachedChat">
+                 <DataTemplate x:DataType="vm:DirectMessageChatListItemViewModel">
                      <Border Padding="12,8" CornerRadius="6">
-                        <TextBlock Text="{Binding Name}"
+                        <TextBlock Text="{Binding DisplayName}"
                                 FontWeight="SemiBold" 
                                 FontSize="15"
                                 TextTrimming="CharacterEllipsis"/>
-     
                      </Border>
                  </DataTemplate>
              </ListBox.ItemTemplate>

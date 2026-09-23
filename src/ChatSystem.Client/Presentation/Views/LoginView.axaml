@@ -46,12 +46,17 @@
             <StackPanel Orientation="Horizontal">
                 <HyperlinkButton
                     Content="Create an Account"
-                    Command="{Binding NavigateToRegistrationScreenCommand}"
+                    Command="{Binding RequestRegistrationNavigationCommand}"
                     VerticalAlignment="Center"
                 />
 
             </StackPanel>
-
+            
+            <TextBlock Text="{Binding SuccessMessage}"
+                       Foreground="#2E7D32"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       IsVisible="{Binding HasSuccess}"/>
 
 			<TextBlock Text="{Binding ErrorMessage}"
                        Foreground="#D32F2F"
