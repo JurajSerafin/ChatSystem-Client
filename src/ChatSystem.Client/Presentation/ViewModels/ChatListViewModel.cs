@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using ChatSystem.Client.Core.Domain.Chat;
+using ChatSystem.Client.Core.Interfaces.Repositories;
 using ChatSystem.Client.Core.Interfaces.Services;
 using ChatSystem.Client.Core.Interfaces.Session;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -19,7 +20,13 @@ internal partial class ChatListViewModel : ViewModelBase {
 
     private readonly ISessionContext _sessionContext;
 
+    private readonly ILocalIdentityRepository _identityRepo;
+
+    private const string DefaultHeaderTitle = "Chats";
+
     public ObservableCollection<DirectMessageChatListItemViewModel> Chats { get; set; } = [];
+
+    [ObservableProperty] private string _headerTitle = DefaultHeaderTitle;
 
     [ObservableProperty] private DirectMessageChatListItemViewModel? _selectedChat;
 
@@ -31,10 +38,12 @@ internal partial class ChatListViewModel : ViewModelBase {
 
     public ChatListViewModel(
         IChatService chatService,
-        ISessionContext sessionContext
+        ISessionContext sessionContext,
+        ILocalIdentityRepository identityRepo
     ) {
         _chatService = chatService;
         _sessionContext = sessionContext;
+        _identityRepo = identityRepo;
     }
 
     /// <summary>
@@ -47,6 +56,8 @@ internal partial class ChatListViewModel : ViewModelBase {
         ErrorMessage = null;
 
         try {
+            _ = DeriveHeaderTitle();
+
             var chats = await _chatService.GetChatsAsync();
 
             Chats.Clear();
@@ -65,6 +76,14 @@ internal partial class ChatListViewModel : ViewModelBase {
         } finally {
             IsBusy = false;
         }
+    }
+
+    private async Task DeriveHeaderTitle() {
+        var identity = await _identityRepo.LoadAsync();
+
+        HeaderTitle = identity is not null
+            ? $"{DefaultHeaderTitle} - {identity.Login} ({identity.Tag})"
+            : DefaultHeaderTitle;
     }
 
     private DirectMessageChatListItemViewModel FromCachedChatCreateChatListItemViewModel(CachedChat chat) {

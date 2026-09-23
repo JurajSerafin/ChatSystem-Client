@@ -5,11 +5,16 @@
              x:DataType="vm:ChatShellViewModel"
              x:CompileBindings="True">
 
-	<Grid ColumnDefinitions="200, 1, *, 1, 60">
+	<Grid ColumnDefinitions="250, 1, *, 1, 60">
 
         <Grid Grid.Column="0" RowDefinitions="Auto, *">
               <Border Grid.Row="0" Padding="16" Background="#0D000000">
-                  <TextBlock Text="Chats" FontSize="20" FontWeight="SemiBold"/>
+                  <TextBlock
+                      Text="{Binding SidebarPane.HeaderTitle}"
+                      FontSize="20"
+                      FontWeight="SemiBold"
+                      TextTrimming="CharacterEllipsis"
+                      ToolTip.Tip="{Binding SidebarPane.HeaderTitle}"/>
               </Border>
 
             <ContentControl Grid.Row="1" Content="{Binding SidebarPane}"/>
