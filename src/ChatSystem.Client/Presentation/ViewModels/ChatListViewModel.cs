@@ -11,8 +11,8 @@ namespace ChatSystem.Client.Presentation.ViewModels;
 /// <summary>
 /// ViewModel managing the collection of direct message chats displayed in the sidebar navigation pane.
 ///
-/// Handles fetching chats, populating child item ViewModels, 
-/// and broadcasting selection changes to parent presentation components.
+/// Handles fetching chats, populating child item ViewModels and broadcasting selection changes
+/// to parent presentation components.
 /// </summary>
 internal partial class ChatListViewModel : ViewModelBase {
     private readonly IChatService _chatService;
@@ -22,7 +22,9 @@ internal partial class ChatListViewModel : ViewModelBase {
     public ObservableCollection<DirectMessageChatListItemViewModel> Chats { get; set; } = [];
 
     [ObservableProperty] private DirectMessageChatListItemViewModel? _selectedChat;
+
     [ObservableProperty] private bool _isBusy;
+
     [ObservableProperty] private string? _errorMessage;
 
     public event EventHandler<CachedChat?>? ChatSelected;
@@ -71,7 +73,7 @@ internal partial class ChatListViewModel : ViewModelBase {
 
     /// <summary>
     /// Handles updates to <see cref="SelectedChat"/> by raising <see cref="ChatSelected"/> 
-    /// and resetting the selection state back to <c>null</c> to enable subsequent re-selection.
+    /// and resetting the selection state back to null to enable subsequent re-selection.
     /// </summary>
     /// <param name="value">The newly selected chat item ViewModel.</param>
     partial void OnSelectedChatChanged(DirectMessageChatListItemViewModel? value) {
