@@ -22,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
 using System.Text.Json;
+using ChatSystem.Client.Core.Interfaces.Networking.Common;
 
 namespace ChatSystem.Client.Config;
 

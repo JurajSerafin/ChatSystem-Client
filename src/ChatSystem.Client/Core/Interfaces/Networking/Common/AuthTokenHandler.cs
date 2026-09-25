@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ChatSystem.Client.Core.Interfaces.Session;
 
-namespace ChatSystem.Client.Infrastructure.Networking;
+namespace ChatSystem.Client.Core.Interfaces.Networking.Common;
 
 /// <summary>
 /// HTTP delegating handler that automatically attaches the current session
@@ -14,7 +14,7 @@ namespace ChatSystem.Client.Infrastructure.Networking;
 internal sealed class AuthTokenHandler : DelegatingHandler {
     private readonly ISessionContext _session;
 
-    private const string authHeader = "Bearer";
+    private const string AuthHeader = "Bearer";
     public AuthTokenHandler(ISessionContext session) {
         _session = session;
     }
@@ -25,7 +25,7 @@ internal sealed class AuthTokenHandler : DelegatingHandler {
     ) {
         if (!string.IsNullOrEmpty(_session.SessionToken)) {
             request.Headers.Authorization = new AuthenticationHeaderValue(
-                authHeader,
+                AuthHeader,
                 _session.SessionToken);
         }
 
